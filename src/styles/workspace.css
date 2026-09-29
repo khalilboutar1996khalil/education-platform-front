@@ -1,0 +1,296 @@
+/* Building blocks shared by the workspace screens (Modules, Quiz, TP…), taken from the back-office design. */
+
+.ef-page {
+  animation: ef-fade-up 0.4s ease backwards;
+}
+
+.ef-page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+
+.ef-page-title {
+  font-family: var(--ef-font-display);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: var(--ef-text);
+}
+
+.ef-page-sub {
+  font-size: 13px;
+  color: var(--ef-text-muted);
+  margin-top: 2px;
+}
+
+/* Gradient call-to-action ("Créer un module", "Créer un quiz"…) */
+.ef-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 18px;
+  border-radius: 11px;
+  background: var(--ef-gradient-brand);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.ef-cta:hover:not(:disabled) {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(22, 163, 74, 0.4);
+}
+
+.ef-cta:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Quiet outlined action ("+ Ajouter un chapitre") */
+.ef-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 15px;
+  border-radius: 10px;
+  background: var(--ef-surface);
+  border: 1px solid var(--ef-border);
+  color: var(--ef-ink-green);
+  font-size: 12.5px;
+  font-weight: 700;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.ef-outline:hover {
+  border-color: var(--ef-brand-500);
+  background: var(--ef-tint-green);
+}
+
+.ef-outline--danger {
+  color: var(--ef-ink-red);
+}
+
+.ef-outline--danger:hover {
+  border-color: var(--ef-ink-red);
+  background: var(--ef-tint-red);
+}
+
+/* Filter bar with search + selects */
+.ef-filters {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  background: var(--ef-surface);
+  border: 1px solid var(--ef-border);
+}
+
+.ef-search {
+  flex: 1;
+  min-width: 180px;
+  height: 37px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: var(--ef-surface-2);
+  color: var(--ef-text-muted);
+}
+
+.ef-search input {
+  flex: 1;
+  width: 0;
+  background: transparent;
+  font-size: 13px;
+  color: var(--ef-text);
+}
+
+.ef-select {
+  height: 37px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--ef-border);
+  background: var(--ef-surface-2);
+  color: var(--ef-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Empty / error panel */
+.ef-empty {
+  padding: 32px 20px;
+  text-align: center;
+  border-radius: 14px;
+  border: 1px dashed var(--ef-border);
+  background: var(--ef-surface);
+}
+
+.ef-empty__title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ef-text);
+  margin-bottom: 4px;
+}
+
+.ef-empty__text {
+  font-size: 12.5px;
+  color: var(--ef-text-muted);
+  margin-bottom: 14px;
+}
+
+.ef-soft-btn {
+  padding: 9px 16px;
+  border-radius: 10px;
+  background: var(--ef-tint-green);
+  color: var(--ef-ink-green);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.ef-loading {
+  display: flex;
+  justify-content: center;
+  padding: 60px 0;
+}
+
+/* Progress track */
+.ef-track {
+  height: 7px;
+  border-radius: 5px;
+  overflow: hidden;
+  background: var(--ef-surface-2);
+}
+
+.ef-track__fill {
+  height: 100%;
+  border-radius: 5px;
+  background: var(--ef-brand-500);
+  transition: width 1s var(--ef-ease-out);
+}
+
+/* Compact inputs used inside modals */
+.ef-field-input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 11px;
+  border: 1px solid var(--ef-border);
+  background: var(--ef-surface-2);
+  color: var(--ef-text);
+  font-size: 13.5px;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+.ef-field-input:hover {
+  border-color: var(--ef-brand-400);
+}
+
+.ef-field-input:focus {
+  outline: none;
+  border-color: var(--ef-brand-500);
+  background: var(--ef-surface);
+  box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+}
+
+textarea.ef-field-input {
+  resize: vertical;
+  line-height: 1.6;
+  min-height: 84px;
+}
+
+/* Modal forms */
+.ef-form {
+  display: grid;
+  gap: 16px;
+}
+
+.ef-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.ef-f {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ef-f__label {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--ef-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.ef-f__err {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ef-ink-red);
+}
+
+.ef-f__hint {
+  font-size: 11.5px;
+  color: var(--ef-text-subtle);
+}
+
+.ef-check {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ef-text);
+  cursor: pointer;
+}
+
+.ef-check input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--ef-brand-600);
+}
+
+.ef-form-submit {
+  justify-content: center;
+  width: 100%;
+  padding: 13px;
+  font-size: 14px;
+  margin-top: 3px;
+}
+
+@media (max-width: 480px) {
+  .ef-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Status pills */
+.ef-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+.ef-pill--green { color: #15803d; background: #dcfce7; }
+.ef-pill--amber { color: #a16207; background: #fef9c3; }
+.ef-pill--red { color: #b91c1c; background: #fee2e2; }
+
+[data-theme='dark'] .ef-pill--green { color: #4ade80; background: rgba(34, 197, 94, 0.16); }
+[data-theme='dark'] .ef-pill--amber { color: #fbbf24; background: rgba(251, 191, 36, 0.16); }
+[data-theme='dark'] .ef-pill--red { color: #f87171; background: rgba(248, 113, 113, 0.16); }

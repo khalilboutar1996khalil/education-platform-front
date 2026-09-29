@@ -1,0 +1,59 @@
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  background: none;
+  color: inherit;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  outline: none;
+  border: none;
+  color: inherit;
+}
+
+a {
+  text-decoration: none;
+  color: var(--ef-ink-green);
+}
+
+/* Visible keyboard focus everywhere, since component styles strip default outlines. */
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 2px solid var(--ef-brand-600);
+  outline-offset: 2px;
+}
+
+@keyframes ef-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* No transform in the end frame: a transform left on an element (even an identity one) makes it
+   the containing block of position:fixed descendants, which pinned dialogs inside the page. */
+@keyframes ef-fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; }
+}
+
+@keyframes ef-slide-right {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes ef-pop-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ef-floaty {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+
+@keyframes ef-spin {
+  to { transform: rotate(360deg); }
+}

@@ -1,0 +1,269 @@
+<div class="ef-root">
+
+  <!-- ═══ NAV ═══ -->
+  <header class="ef-header">
+    <div class="ef-header-inner">
+      <div class="ef-logo">
+        <div class="ef-logo-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round"><path d="M22 10L12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"></path></svg>
+        </div>
+        <span class="ef-logo-text">EduFlow</span>
+      </div>
+      <nav class="ef-nav-links">
+        <a href="#services" class="ef-nav-link">Formations</a>
+        <a href="#why" class="ef-nav-link">Pourquoi nous</a>
+        <a href="#how" class="ef-nav-link">Fonctionnement</a>
+        <a href="#faq" class="ef-nav-link">FAQ</a>
+        <a href="#contact" class="ef-nav-link">Contact</a>
+      </nav>
+      <div class="ef-header-actions">
+        <a routerLink="/login" class="ef-connect-link">Se connecter</a>
+        <a routerLink="/register" class="ef-signup-btn">S'inscrire →</a>
+        <button (click)="toggleMenu()" class="ef-burger" type="button" aria-label="Ouvrir le menu">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#15803D" stroke-width="2.4" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+      </div>
+    </div>
+    @if (menuOpen()) {
+      <nav class="ef-mobile-nav">
+        <a href="#services" (click)="closeMenu()">Formations</a>
+        <a href="#why" (click)="closeMenu()">Pourquoi nous</a>
+        <a href="#how" (click)="closeMenu()">Fonctionnement</a>
+        <a href="#faq" (click)="closeMenu()">FAQ</a>
+        <a href="#contact" (click)="closeMenu()">Contact</a>
+        <a routerLink="/login" (click)="closeMenu()">Se connecter</a>
+        <a routerLink="/register" (click)="closeMenu()">S'inscrire</a>
+      </nav>
+    }
+  </header>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="ef-hero-section">
+    <div class="ef-hero-wrap">
+      <div class="ef-hero reveal">
+        <div>
+          <span class="ef-badge">
+            <span class="ef-badge-dot"></span>2ᵉ, 3ᵉ &amp; 4ᵉ année secondaire — filières scientifiques, économie &amp; lettres
+          </span>
+          <h1 class="ef-h1">Apprendre l'informatique,<br>partout, à votre rythme.</h1>
+          <p class="ef-hero-desc">Une plateforme 100% en ligne pour préparer l'informatique du secondaire : cours structurés, vidéos, quiz et TP corrigés — pensée pour les lycéens et rassurante pour les parents.</p>
+          <div class="ef-hero-ctas">
+            <a href="#services" class="ef-btn-outline">Découvrir nos cours</a>
+            <a routerLink="/register" class="ef-btn-primary">S'inscrire maintenant →</a>
+          </div>
+          <div class="ef-hero-badges">
+            <div><div class="ef-stat-num">12</div><div class="ef-stat-label">modules d'informatique</div></div>
+            <div><div class="ef-stat-num">100%</div><div class="ef-stat-label">en ligne</div></div>
+            <div><div class="ef-stat-num">3 niveaux</div><div class="ef-stat-label">2ᵉ, 3ᵉ et 4ᵉ AS</div></div>
+          </div>
+        </div>
+        <div class="ef-hero-img">
+          <div class="ef-hero-blob"></div>
+          <div class="ef-hero-card">
+            @for (hm of heroModules; track hm.title) {
+              <div class="ef-hero-module">
+                <div class="ef-hero-module-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path attr.d="{{ hm.icon }}"></path></svg></div>
+                <div class="ef-hero-module-text"><div class="ef-hero-module-title">{{ hm.title }}</div><div class="ef-hero-module-meta">{{ hm.meta }}</div></div>
+              </div>
+            }
+          </div>
+          <div class="ef-hero-tag">
+            <div class="ef-hero-tag-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+            <div><div class="ef-hero-tag-title">TP corrigé</div><div class="ef-hero-tag-meta">Note reçue en 48h</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PRÉSENTATION ═══ -->
+  <section appReveal class="ef-mission">
+    <div class="ef-mission-grid">
+      <div class="ef-mission-stats">
+        @for (ms of missionStats; track ms.label) {
+          <div class="ef-mission-stat">
+            <div class="ef-mission-stat-icon"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path attr.d="{{ ms.icon }}"></path></svg></div>
+            <div><div class="ef-mission-stat-value">{{ ms.value }}</div><div class="ef-mission-stat-label">{{ ms.label }}</div></div>
+          </div>
+        }
+      </div>
+      <div>
+        <span class="ef-eyebrow">Notre mission</span>
+        <h2 class="ef-h2">Rendre l'informatique du secondaire claire, accessible et suivie</h2>
+        <p class="ef-mission-desc">EduFlow accompagne les lycéens de 2ᵉ, 3ᵉ et 4ᵉ année secondaire dans le module d'informatique, quelle que soit leur filière — scientifique, économie ou lettres. Chaque chapitre est expliqué pas à pas, avec des TP concrets et une correction personnalisée.</p>
+        <div class="ef-mission-tags">
+          <div class="ef-mission-tag"><div class="ef-mission-tag-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.4"><path d="M22 10L12 5 2 10l10 5 10-5z"></path></svg></div><span>Lycéens</span></div>
+          <div class="ef-mission-tag"><div class="ef-mission-tag-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.4"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div><span>Parents rassurés</span></div>
+          <div class="ef-mission-tag"><div class="ef-mission-tag-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.4"><path d="M22 10L12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"></path></svg></div><span>Filières S, éco &amp; lettres</span></div>
+          <div class="ef-mission-tag"><div class="ef-mission-tag-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.4"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg></div><span>100% à distance</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ SERVICES / FORMATIONS ═══ -->
+  <section id="services" appReveal class="ef-services">
+    <div class="ef-services-wrap">
+      <div class="ef-section-head">
+        <span class="ef-eyebrow ef-eyebrow--light">Nos formations</span>
+        <h2 class="ef-h2 ef-h2--light">Trois niveaux, un seul module : l'informatique</h2>
+      </div>
+      <div class="ef-services-grid">
+        @for (sv of services; track sv.title; let i = $index) {
+          <div class="ef-service-card ef-reveal-item" [style.transition-delay.s]="i * 0.08">
+            <div class="ef-service-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path attr.d="{{ sv.icon }}"></path></svg>
+            </div>
+            <div class="ef-service-title">{{ sv.title }}</div>
+            <div class="ef-service-desc">{{ sv.desc }}</div>
+            <div class="ef-service-footer">
+              <span class="ef-service-tag">{{ sv.tag }}</span>
+              <a routerLink="/register" class="ef-service-link">S'inscrire →</a>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ POURQUOI NOUS ═══ -->
+  <section id="why" appReveal class="ef-why">
+    <div class="ef-section-head">
+      <span class="ef-eyebrow">Pourquoi EduFlow</span>
+      <h2 class="ef-h2">Une plateforme pensée pour rassurer et faire progresser</h2>
+    </div>
+    <div class="ef-why-grid">
+      @for (rs of reasons; track rs.title; let i = $index) {
+        <div class="ef-reason-card ef-reveal-item" [style.transition-delay.s]="i * 0.06">
+          <div class="ef-reason-icon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path attr.d="{{ rs.icon }}"></path></svg></div>
+          <div class="ef-reason-title">{{ rs.title }}</div>
+          <div class="ef-reason-desc">{{ rs.desc }}</div>
+        </div>
+      }
+    </div>
+  </section>
+
+
+  <!-- ═══ COMMENT ÇA FONCTIONNE ═══ -->
+  <section id="how" appReveal class="ef-how">
+    <div class="ef-how-wrap">
+      <div class="ef-section-head">
+        <span class="ef-eyebrow">Comment ça fonctionne</span>
+        <h2 class="ef-h2">De la découverte au suivi de progression</h2>
+      </div>
+      <div class="ef-how-grid">
+        @for (st of steps; track st.n; let i = $index) {
+          <div class="ef-step-card ef-reveal-item" [style.transition-delay.s]="i * 0.08">
+            <div class="ef-step-num">{{ st.n }}</div>
+            <div class="ef-step-title">{{ st.title }}</div>
+            <div class="ef-step-desc">{{ st.desc }}</div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TÉMOIGNAGES ═══ -->
+  <section class="ef-testimonials">
+    <div class="ef-section-head">
+      <span class="ef-eyebrow">Témoignages</span>
+      <h2 class="ef-h2">Ce qu'en disent élèves et parents</h2>
+    </div>
+    <div class="ef-testimonials-grid">
+      @for (pt of parentTestimonials; track pt.name) {
+        <div class="ef-testimonial-card">
+          <div class="ef-stars">
+            @for (star of [1,2,3,4,5]; track star) {
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#F59E0B" stroke="none"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"></path></svg>
+            }
+          </div>
+          <div class="ef-testimonial-text">« {{ pt.text }} »</div>
+          <div class="ef-testimonial-footer">
+            <div class="ef-testimonial-avatar">{{ pt.initials }}</div>
+            <div><div class="ef-testimonial-name">{{ pt.name }}</div><div class="ef-testimonial-role">Parent d'élève</div></div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ═══ FAQ ═══ -->
+  <section id="faq" appReveal class="ef-faq">
+    <div class="ef-section-head">
+      <span class="ef-eyebrow">Questions fréquentes</span>
+      <h2 class="ef-h2">Vous avez des questions ?</h2>
+    </div>
+    <div class="ef-faq-list">
+      @for (fq of faqData; track fq.q; let i = $index) {
+        <div class="ef-faq-item">
+          <div (click)="toggleFaq(i)" class="ef-faq-question">
+            <span>{{ fq.q }}</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.4" stroke-linecap="round" class="ef-faq-chevron" [style.transform]="faqOpen()[i] ? 'rotate(180deg)' : 'rotate(0deg)'"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          @if (faqOpen()[i]) {
+            <div class="ef-faq-answer">{{ fq.a }}</div>
+          }
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ═══ CONTACT ═══ -->
+  <section id="contact" appReveal class="ef-contact">
+    <div class="ef-contact-wrap">
+      <div>
+        <span class="ef-eyebrow ef-eyebrow--light">Contact</span>
+        <h2 class="ef-h2 ef-h2--light">Une question ? Parlons-en</h2>
+        <div class="ef-contact-info">
+          <div class="ef-contact-row"><div class="ef-contact-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div><span>+216 53 117 158&nbsp;</span></div>
+          <div class="ef-contact-row"><div class="ef-contact-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2"><path d="M4 4h16v16H4z" stroke="none"></path><path d="M22 6l-10 7L2 6"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect></svg></div><span>contact-education&#64;outlook.com</span></div>
+          <div class="ef-contact-row"><div class="ef-contact-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div><span>Tunisie — support en ligne</span></div>
+        </div>
+        <div class="ef-social-row">
+          @for (soc of socials; track soc.icon) {
+            <a href="#" class="ef-social-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2"><path attr.d="{{ soc.icon }}"></path></svg></a>
+          }
+        </div>
+      </div>
+      <div class="ef-contact-form">
+        <div class="ef-contact-form-title">Rejoindre la section</div>
+        <p class="ef-contact-text">Créez votre compte en une minute : choisissez votre niveau et accédez tout de suite à vos modules.</p>
+        <a routerLink="/register" class="ef-contact-submit">Créer mon compte →</a>
+        <p class="ef-contact-text ef-contact-text--alt">Vous préférez que votre professeur valide votre inscription ? Envoyez-lui une demande d'accès.</p>
+        <a routerLink="/request-access" class="ef-contact-alt">Demander un accès</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer class="ef-footer">
+    <div class="ef-footer-wrap">
+      <div class="ef-footer-grid">
+        <div>
+          <div class="ef-footer-logo">
+            <div class="ef-footer-logo-mark"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.4" stroke-linecap="round"><path d="M22 10L12 5 2 10l10 5 10-5z"></path><path d="M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5"></path></svg></div>
+            <span class="ef-footer-logo-text">EduFlow</span>
+          </div>
+          <p class="ef-footer-desc">La plateforme d'informatique du secondaire, 100% en ligne — 2ᵉ, 3ᵉ et 4ᵉ année, toutes filières.</p>
+        </div>
+        <div>
+          <div class="ef-footer-heading">Navigation</div>
+          <div class="ef-footer-links"><a href="#services">Formations</a><a href="#why">Pourquoi nous</a><a href="#how">Fonctionnement</a><a href="#faq">FAQ</a></div>
+        </div>
+        <div>
+          <div class="ef-footer-heading">Formations</div>
+          <div class="ef-footer-links"><span>2ᵉ année secondaire</span><span>3ᵉ année secondaire</span><span>4ᵉ année secondaire</span><span>Toutes filières</span></div>
+        </div>
+        <div>
+          <div class="ef-footer-heading">Légal</div>
+          <div class="ef-footer-links"><a href="#">Mentions légales</a><a href="#">Politique de confidentialité</a><a href="#contact">Contact</a></div>
+        </div>
+      </div>
+      <div class="ef-footer-bottom">
+        <span>© 2026 EduFlow. Tous droits réservés.</span>
+        <span>Fait avec soin pour les lycéens tunisiens.</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
