@@ -114,7 +114,17 @@ function matchesNew(group: AbstractControl): ValidationErrors | null {
     </div>
   `,
   styles: `
-    .wrap { max-width: 700px; }
+    .wrap {
+      max-width: 1180px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 16px;
+      align-items: start;
+    }
+    .wrap > .ef-page-head, .wrap > .card:last-child { grid-column: 1 / -1; }
+    .wrap > .card { margin-bottom: 16px; }
+    .wrap > .card:nth-of-type(1), .wrap > .card:nth-of-type(2) { height: calc(100% - 16px); }
+    @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } }
     .card { margin-bottom: 14px; padding: 22px; border-radius: 16px; background: var(--ef-surface); border: 1px solid var(--ef-border); animation: ef-fade-up 0.4s ease backwards; }
     .card__title { margin-bottom: 16px; font-family: var(--ef-font-display); font-size: 14.5px; font-weight: 700; color: var(--ef-text); }
     .who { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
