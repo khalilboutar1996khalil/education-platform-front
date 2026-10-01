@@ -1,5 +1,4 @@
-/* The single source of colour truth. Dark mode redefines these under [data-theme="dark"];
-   components reference var(--ef-*) and never hardcode a colour. */
+/* The single source of colour truth: components reference var(--ef-*) and never hardcode a colour. */
 
 :root {
   color-scheme: light;
@@ -81,37 +80,6 @@
 
   /* Layout */
   --ef-header-height: 62px;
-}
-
-[data-theme='dark'] {
-  color-scheme: dark;
-
-  --ef-bg: #071410;
-  --ef-surface: #0E2018;
-  --ef-surface-2: #16301F;
-  --ef-border: #1E3D2A;
-
-  --ef-text: #E6F4EA;
-  --ef-text-muted: #9CC0AA;
-  --ef-text-subtle: #7FAE8E;
-
-  --ef-ink-green: #4ADE80;
-  --ef-ink-teal: #5EEAD4;
-  --ef-ink-lime: #A3E635;
-  --ef-ink-emerald: #6EE7B7;
-  --ef-ink-amber: #FBBF24;
-  --ef-ink-red: #F87171;
-
-  --ef-tint-green: rgba(74, 222, 128, 0.16);
-  --ef-tint-teal: rgba(94, 234, 212, 0.16);
-  --ef-tint-lime: rgba(163, 230, 53, 0.16);
-  --ef-tint-emerald: rgba(110, 231, 183, 0.16);
-  --ef-tint-amber: rgba(251, 191, 36, 0.18);
-  --ef-tint-red: rgba(248, 113, 113, 0.18);
-
-  --ef-shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.30);
-  --ef-shadow-md: 0 14px 30px rgba(0, 0, 0, 0.35);
-  --ef-shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.45);
 }
 
 /* Honours both the settings toggle and the OS preference. */

@@ -90,16 +90,7 @@ function matchesNew(group: AbstractControl): ValidationErrors | null {
       </section>
 
       <section class="card">
-        <div class="card__title">Apparence et accessibilité</div>
-        <div class="row">
-          <div>
-            <div class="row__label">Mode sombre</div>
-            <div class="row__sub">Plus confortable le soir</div>
-          </div>
-          <button type="button" class="switch" role="switch" [attr.aria-checked]="theme.darkMode()" [class.switch--on]="theme.darkMode()" (click)="theme.toggleDarkMode()" aria-label="Mode sombre">
-            <span class="switch__knob"></span>
-          </button>
-        </div>
+        <div class="card__title">Accessibilité</div>
         <div class="row">
           <div>
             <div class="row__label">Réduire les animations</div>

@@ -1,6 +1,5 @@
 import { Injectable, effect, signal } from '@angular/core';
 
-const THEME_KEY = 'eduflow.theme';
 const MOTION_KEY = 'eduflow.reduce-motion';
 
 /**
@@ -9,25 +8,22 @@ const MOTION_KEY = 'eduflow.reduce-motion';
  */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  readonly darkMode = signal(readFlag(THEME_KEY, false));
   readonly reduceMotion = signal(readFlag(MOTION_KEY, false));
 
   constructor() {
-    effect(() => {
-      const dark = this.darkMode();
-      document.documentElement.dataset['theme'] = dark ? 'dark' : 'light';
-      writeFlag(THEME_KEY, dark);
-    });
+    // Light only. Clears a dark theme saved by an earlier version so nobody gets stuck in it.
+    document.documentElement.dataset['theme'] = 'light';
+    try {
+      localStorage.removeItem('eduflow.theme');
+    } catch {
+      // Storage blocked: nothing to clean up.
+    }
 
     effect(() => {
       const reduced = this.reduceMotion();
       document.documentElement.dataset['reduceMotion'] = String(reduced);
       writeFlag(MOTION_KEY, reduced);
     });
-  }
-
-  toggleDarkMode(): void {
-    this.darkMode.update((v) => !v);
   }
 
   toggleReduceMotion(): void {

@@ -5,7 +5,6 @@ import { AuthService } from '../core/auth/auth.service';
 import { LEVEL_LABELS, LEVEL_OPTIONS, ROLE_LABELS } from '../core/models/user.model';
 import { LevelService } from '../core/services/level.service';
 import { AppNotification, NotificationService } from '../core/services/notification.service';
-import { ThemeService } from '../core/services/theme.service';
 
 @Component({
   selector: 'ef-header',
@@ -40,27 +39,6 @@ import { ThemeService } from '../core/services/theme.service';
           }
         </select>
       }
-
-      <button
-        type="button"
-        class="icon-btn icon-btn--rotate"
-        [title]="theme.darkMode() ? 'Thème clair' : 'Thème sombre'"
-        (click)="theme.toggleDarkMode()"
-      >
-        @if (theme.darkMode()) {
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-        } @else {
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-            <circle cx="12" cy="12" r="5" />
-            <line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" />
-            <line x1="4.2" y1="4.2" x2="5.6" y2="5.6" /><line x1="18.4" y1="18.4" x2="19.8" y2="19.8" />
-            <line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" />
-            <line x1="4.2" y1="19.8" x2="5.6" y2="18.4" /><line x1="18.4" y1="5.6" x2="19.8" y2="4.2" />
-          </svg>
-        }
-      </button>
 
       <div class="notif">
         <button type="button" class="icon-btn" title="Notifications" (click)="toggleNotif()">
@@ -437,7 +415,6 @@ import { ThemeService } from '../core/services/theme.service';
 })
 export class HeaderComponent {
   protected readonly auth = inject(AuthService);
-  protected readonly theme = inject(ThemeService);
 
   readonly title = input('EduFlow');
   readonly toggleSidebar = output<void>();

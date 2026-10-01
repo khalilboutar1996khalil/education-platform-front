@@ -291,6 +291,3 @@ textarea.ef-field-input {
 .ef-pill--amber { color: #a16207; background: #fef9c3; }
 .ef-pill--red { color: #b91c1c; background: #fee2e2; }
 
-[data-theme='dark'] .ef-pill--green { color: #4ade80; background: rgba(34, 197, 94, 0.16); }
-[data-theme='dark'] .ef-pill--amber { color: #fbbf24; background: rgba(251, 191, 36, 0.16); }
-[data-theme='dark'] .ef-pill--red { color: #f87171; background: rgba(248, 113, 113, 0.16); }

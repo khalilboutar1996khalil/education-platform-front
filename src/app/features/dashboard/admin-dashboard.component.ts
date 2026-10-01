@@ -484,12 +484,7 @@ const ACTIVITY_TAG: Record<ActivityType, { label: string; tone: (typeof TONES)[n
       transition: height 0.9s var(--ef-ease-out);
     }
 
-    :host-context([data-theme='dark']) .bars__bar {
-      background: #1e3d2a;
-    }
-
-    .bars__bar--peak,
-    :host-context([data-theme='dark']) .bars__bar--peak {
+    .bars__bar--peak {
       background: linear-gradient(180deg, #22c55e, #15803d);
     }
 
