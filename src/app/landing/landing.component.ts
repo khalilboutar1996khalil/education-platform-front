@@ -22,8 +22,8 @@ export class LandingComponent {
     },
     {
       icon: 'M12 3c4.97 0 9 1.34 9 3s-4.03 3-9 3-9-1.34-9-3 4.03-3 9-3z M21 12c0 1.66-4 3-9 3s-9-1.34-9-3 M3 6v12c0 1.66 4 3 9 3s9-1.34 9-3V6',
-      title: 'Bases de données',
-      meta: '2ᵉ AS · 4 chapitres',
+      title: 'Environnement informatique de travail',
+      meta: '7ᵉ année · 3 leçons',
     },
     {
       icon: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6',
@@ -32,15 +32,15 @@ export class LandingComponent {
     },
     {
       icon: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z',
-      title: 'Sécurité informatique',
-      meta: '3ᵉ AS · 4 chapitres',
+      title: 'Pensée logique et programmation',
+      meta: '8ᵉ année · 4 leçons',
     },
   ];
 
   missionStats = [
     {
       icon: 'M22 10L12 5 2 10l10 5 10-5z M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5',
-      value: '12',
+      value: '23',
       label: "modules d'informatique",
     },
     {
@@ -62,6 +62,12 @@ export class LandingComponent {
 
   services = [
     {
+      icon: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20 M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z',
+      title: 'Collège — 7ᵉ, 8ᵉ et 9ᵉ année',
+      desc: "Environnement informatique, Internet, création de contenus numériques et programmation, conformes au programme officiel — avec un quiz pour chaque leçon.",
+      tag: '11 modules · 28 quiz',
+    },
+    {
       icon: 'M22 10L12 5 2 10l10 5 10-5z M6 12v5c0 1.7 2.7 3 6 3s6-1.3 6-3v-5',
       title: '2ᵉ année secondaire',
       desc: 'Algorithmique, structures de données, bases de données, systèmes, réseaux et développement web — 6 modules complets.',
@@ -78,12 +84,6 @@ export class LandingComponent {
       title: '4ᵉ année secondaire',
       desc: 'Modules adaptés aux filières lettres et économie & gestion, avec le même suivi de cours, TP et quiz que les autres niveaux.',
       tag: 'Lettres · Éco & gestion',
-    },
-    {
-      icon: 'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',
-      title: 'Toutes filières',
-      desc: 'Le même contenu pédagogique pour les filières scientifiques, gestion & économie et lettres — un seul parcours pour tous.',
-      tag: 'S · Éco · Lettres',
     },
   ];
 
