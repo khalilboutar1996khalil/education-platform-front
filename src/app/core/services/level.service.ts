@@ -1,8 +1,8 @@
 import { Injectable, effect, signal } from '@angular/core';
-import { Level } from '../models/user.model';
+import { LEVEL_OPTIONS, Level } from '../models/user.model';
 
 const LEVEL_KEY = 'eduflow.admin-level';
-const LEVELS: readonly Level[] = ['SECOND_AS', 'THIRD_AS', 'FOURTH_AS'];
+const LEVELS: readonly Level[] = LEVEL_OPTIONS.map((o) => o.value);
 
 /**
  * The level the admin is currently working on, picked in the header.
