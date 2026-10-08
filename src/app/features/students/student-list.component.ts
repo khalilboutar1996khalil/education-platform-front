@@ -54,7 +54,7 @@ const PAGE_SIZE = 20;
           <div class="ef-empty__text">Ajustez votre recherche ou le filtre de statut.</div>
         } @else {
           <div class="ef-empty__title">Aucun élève en {{ levelLabel() }}</div>
-          <div class="ef-empty__text">Invitez un élève, ou partagez le code de classe pour qu'il demande l'accès.</div>
+          <div class="ef-empty__text">Invitez un élève, ou laissez-le créer son compte en choisissant ce niveau.</div>
           <button type="button" class="ef-soft-btn" (click)="inviting.set(true)">Inviter un élève</button>
         }
       </div>

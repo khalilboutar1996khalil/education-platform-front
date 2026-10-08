@@ -23,7 +23,6 @@ const ICONS = {
   chart: 'M18 20V10M12 20V4M6 20v-6',
   bell: 'M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',
   pen: 'M11 4H4v16h16v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z',
-  key: 'M21 2l-2 2m-7.6 7.6a5 5 0 1 1-7 7 5 5 0 0 1 7-7zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3',
   layers: 'M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5',
   gear:
     'M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6zM19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z',
@@ -46,7 +45,6 @@ const ADMIN_NAV: NavGroup[] = [
     items: [
       { path: 'students', label: 'Élèves', icon: ICONS.users },
       { path: 'grades', label: 'Notes', icon: ICONS.chart },
-      { path: 'class-codes', label: 'Codes de classe', icon: ICONS.key },
     ],
   },
   {
@@ -101,7 +99,6 @@ export const PAGE_TITLES: Record<string, { admin: string; student: string }> = {
   resources: { admin: 'Ressources', student: 'Ressources' },
   students: { admin: 'Élèves', student: 'Élèves' },
   grades: { admin: 'Notes', student: 'Mes notes' },
-  'class-codes': { admin: 'Codes de classe', student: 'Codes de classe' },
   levels: { admin: 'Niveaux', student: 'Niveaux' },
   announcements: { admin: 'Annonces', student: 'Annonces' },
   blog: { admin: 'Blog', student: 'Blog' },
