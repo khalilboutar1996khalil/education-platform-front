@@ -66,13 +66,6 @@ const routes: Routes = [
       import('../grades/grades-page.component').then((m) => m.GradesPageComponent),
   },
   {
-    path: 'class-codes',
-    title: 'Codes de classe · EduFlow',
-    canActivate: [roleGuard('ADMIN')],
-    loadComponent: () =>
-      import('../class-codes/class-codes-page.component').then((m) => m.ClassCodesPageComponent),
-  },
-  {
     path: 'announcements',
     title: 'Annonces · EduFlow',
     loadComponent: () =>
