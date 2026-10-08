@@ -3,7 +3,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { EMPTY, catchError, debounceTime, switchMap, tap } from 'rxjs';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS, User, UserStatus } from '../../core/models/user.model';
+import { User, UserStatus } from '../../core/models/user.model';
 import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { PagerComponent } from '../../shared/ui/pager.component';
@@ -12,6 +12,7 @@ import { CredentialsDialogComponent } from './credentials-dialog.component';
 import { InviteFormComponent } from './invite-form.component';
 import { StudentsApi } from './students.api';
 import { InviteStudentResponse, USER_STATUS_LABELS, USER_STATUS_PILL } from './students.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 const PAGE_SIZE = 20;
 
@@ -128,6 +129,7 @@ const PAGE_SIZE = 20;
   `,
 })
 export class StudentListComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(StudentsApi);
   private readonly toast = inject(ToastService);
   protected readonly levels = inject(LevelService);
@@ -150,7 +152,7 @@ export class StudentListComponent {
   protected readonly inviting = signal(false);
   protected readonly created = signal<(InviteStudentResponse & { heading: string }) | null>(null);
 
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
 
   private readonly criteria = computed(() => ({
     level: this.levels.current(),

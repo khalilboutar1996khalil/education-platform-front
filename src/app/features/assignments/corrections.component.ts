@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, i
 import { FormsModule } from '@angular/forms';
 import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS } from '../../core/models/user.model';
+
 import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { saveBlob } from '../../shared/save-blob';
@@ -11,6 +11,7 @@ import { SpinnerComponent } from '../../shared/ui/spinner.component';
 import { CoursesApi } from '../courses/courses.api';
 import { AssignmentsApi } from './assignments.api';
 import { AssignmentSummary, StoredFile, Submission, formatSize, isPending } from './assignments.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 type Tab = 'PENDING' | 'GRADED' | 'ALL';
 
@@ -299,6 +300,7 @@ const TONES = ['green', 'teal', 'lime', 'emerald'] as const;
   `,
 })
 export class CorrectionsComponent implements OnInit {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(AssignmentsApi);
   private readonly coursesApi = inject(CoursesApi);
   private readonly toast = inject(ToastService);
@@ -325,7 +327,7 @@ export class CorrectionsComponent implements OnInit {
   private readonly editing = signal<Set<number>>(new Set());
   private readonly drafts = signal<Record<number, { grade: number | null; feedback: string }>>({});
 
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
   protected readonly pendingCount = computed(() => this.rows().filter(isPending).length);
 
   protected readonly visible = computed(() =>

@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_OPTIONS, Level } from '../../core/models/user.model';
+import { Level } from '../../core/models/user.model';
 import { applyServerErrors, errorMessageFor } from '../../shared/forms/form-errors';
 import { ModalComponent } from '../../shared/ui/modal.component';
 import { ClassCodesApi } from './class-codes.api';
 import { ClassCode } from './class-codes.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-class-code-form',
@@ -24,7 +25,7 @@ import { ClassCode } from './class-codes.model';
         <label class="ef-f">
           <span class="ef-f__label">Niveau</span>
           <select class="ef-field-input" formControlName="level">
-            @for (l of levels; track l.value) {
+            @for (l of levels(); track l.value) {
               <option [value]="l.value">{{ l.label }}</option>
             }
           </select>
@@ -45,6 +46,7 @@ import { ClassCode } from './class-codes.model';
   `,
 })
 export class ClassCodeFormComponent implements OnInit {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(ClassCodesApi);
   private readonly fb = inject(FormBuilder);
 
@@ -52,13 +54,13 @@ export class ClassCodeFormComponent implements OnInit {
   readonly closed = output<void>();
   readonly saved = output<ClassCode>();
 
-  protected readonly levels = LEVEL_OPTIONS;
+  protected readonly levels = this.catalog.options;
   protected readonly saving = signal(false);
   protected readonly formError = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
     code: ['', [Validators.required, Validators.maxLength(40), Validators.pattern(/^[A-Za-z0-9-]+$/)]],
-    level: this.fb.nonNullable.control<Level>('SECOND_AS'),
+    level: this.fb.nonNullable.control<Level>(''),
     label: ['', Validators.maxLength(255)],
   });
 

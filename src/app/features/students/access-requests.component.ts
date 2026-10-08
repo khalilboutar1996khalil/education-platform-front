@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS } from '../../core/models/user.model';
+
 import { ToastService } from '../../core/services/toast.service';
 import { PagerComponent } from '../../shared/ui/pager.component';
 import { SpinnerComponent } from '../../shared/ui/spinner.component';
@@ -10,6 +10,7 @@ import { CredentialsDialogComponent } from './credentials-dialog.component';
 import { RejectDialogComponent } from './reject-dialog.component';
 import { StudentsApi } from './students.api';
 import { AccessRequest, AccessRequestStatus, REQUEST_STATUS_LABELS, REQUEST_STATUS_PILL } from './students.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 const PAGE_SIZE = 20;
 
@@ -112,6 +113,7 @@ const PAGE_SIZE = 20;
   `,
 })
 export class AccessRequestsComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(StudentsApi);
   private readonly toast = inject(ToastService);
 
@@ -168,7 +170,7 @@ export class AccessRequestsComponent {
   }
 
   protected level(r: AccessRequest): string {
-    return LEVEL_LABELS[r.level].replace(' informatique', '');
+    return this.catalog.short(r.level);
   }
 
   protected approve(r: AccessRequest): void {

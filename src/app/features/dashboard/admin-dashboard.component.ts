@@ -2,11 +2,12 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS } from '../../core/models/user.model';
+
 import { LevelService } from '../../core/services/level.service';
 import { SpinnerComponent } from '../../shared/ui/spinner.component';
 import { DashboardApi } from './dashboard.api';
 import { Activity, ActivityType, AdminDashboard, CourseSummary } from './dashboard.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 const ICONS = {
   users: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8z',
@@ -640,6 +641,7 @@ const ACTIVITY_TAG: Record<ActivityType, { label: string; tone: (typeof TONES)[n
   `,
 })
 export class AdminDashboardComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(DashboardApi);
   private readonly levels = inject(LevelService);
 
@@ -650,7 +652,7 @@ export class AdminDashboardComponent {
   protected readonly loading = signal(false);
   protected readonly error = signal<string | null>(null);
 
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
 
   protected readonly levelStudents = computed(
     () => this.data()?.studentsByLevel.find((r) => r.level === this.levels.current())?.count ?? 0,

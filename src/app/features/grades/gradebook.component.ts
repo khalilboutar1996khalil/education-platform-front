@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { EMPTY, Subject, catchError, forkJoin, map, merge, switchMap, tap } from 'rxjs';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS, User } from '../../core/models/user.model';
+import { User } from '../../core/models/user.model';
 import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { SpinnerComponent } from '../../shared/ui/spinner.component';
@@ -15,6 +15,7 @@ import { GradeEntryComponent } from './grade-entry.component';
 import { GradesApi } from './grades.api';
 import { GRADE_KIND_LABELS, Grade, GradeKind, GradebookRow, bandOf, formatMark } from './grades.model';
 import { StudentGradesComponent } from './student-grades.component';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 interface Column {
   label: string;
@@ -224,6 +225,7 @@ interface Column {
   `,
 })
 export class GradebookComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly coursesApi = inject(CoursesApi);
   private readonly studentsApi = inject(StudentsApi);
   private readonly api = inject(GradesApi);
@@ -248,7 +250,7 @@ export class GradebookComponent {
   private readonly levelRetry = new Subject<void>();
   private readonly bookRetry = new Subject<void>();
 
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
   protected readonly course = computed(() => this.courses().find((c) => c.id === this.courseId()) ?? null);
 
   /** The API only lists students who already have a mark, so the level's roster fills in the rest. */

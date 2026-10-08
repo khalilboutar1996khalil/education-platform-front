@@ -3,7 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS } from '../../core/models/user.model';
+
 import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { saveBlob } from '../../shared/save-blob';
@@ -14,6 +14,7 @@ import { CourseSummary } from '../courses/courses.model';
 import { ResourceFormComponent } from './resource-form.component';
 import { ResourcesApi } from './resources.api';
 import { RESOURCE_LOOK, RESOURCE_SHORT, Resource, ResourceType } from './resources.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-resource-list',
@@ -233,6 +234,7 @@ import { RESOURCE_LOOK, RESOURCE_SHORT, Resource, ResourceType } from './resourc
   `,
 })
 export class ResourceListComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(ResourcesApi);
   private readonly coursesApi = inject(CoursesApi);
   private readonly auth = inject(AuthService);
@@ -253,7 +255,7 @@ export class ResourceListComponent {
   protected readonly courseFilter = signal<number | null>(null);
   protected readonly typeFilter = signal<ResourceType | null>(null);
 
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
 
   protected readonly levelCourses = computed(() =>
     this.isAdmin() ? this.allCourses().filter((c) => c.level === this.levels.current()) : this.allCourses(),
@@ -318,7 +320,7 @@ export class ResourceListComponent {
 
   protected meta(r: Resource): string {
     const where = r.courseCode ?? 'Tous modules';
-    const level = r.level ? LEVEL_LABELS[r.level].replace(' informatique', '') : 'Tous niveaux';
+    const level = r.level ? this.catalog.short(r.level) : 'Tous niveaux';
     const size = r.file ? formatSize(r.file.sizeBytes) : RESOURCE_SHORT[r.type];
     return this.isAdmin() ? `${size} · ${where} · ${level}` : `${size} · ${where}`;
   }

@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, input
 import { timeAgo } from '../shared/datetime';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../core/auth/auth.service';
-import { LEVEL_LABELS, LEVEL_OPTIONS, ROLE_LABELS } from '../core/models/user.model';
+import { ROLE_LABELS } from '../core/models/user.model';
 import { LevelService } from '../core/services/level.service';
 import { AppNotification, NotificationService } from '../core/services/notification.service';
+import { LevelCatalog } from '../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-header',
@@ -31,11 +32,10 @@ import { AppNotification, NotificationService } from '../core/services/notificat
         <select
           class="level"
           title="Niveau"
-          [value]="levels.current()"
           (change)="levels.current.set($any($event.target).value)"
         >
-          @for (opt of levelOptions; track opt.value) {
-            <option [value]="opt.value">{{ opt.label }}</option>
+          @for (opt of levelOptions(); track opt.value) {
+            <option [value]="opt.value" [selected]="opt.value === levels.current()">{{ opt.label }}</option>
           }
         </select>
       }
@@ -414,6 +414,7 @@ import { AppNotification, NotificationService } from '../core/services/notificat
   `,
 })
 export class HeaderComponent {
+  protected readonly catalog = inject(LevelCatalog);
   protected readonly auth = inject(AuthService);
 
   readonly title = input('EduFlow');
@@ -421,7 +422,10 @@ export class HeaderComponent {
 
   protected readonly levels = inject(LevelService);
   protected readonly notifications = inject(NotificationService);
-  protected readonly levelOptions = LEVEL_OPTIONS;
+  // Every level, closed ones too: the admin may still need to look at a closed level's data
+  protected readonly levelOptions = computed(() =>
+    this.catalog.all().map((l) => ({ value: l.code, label: l.active ? l.name : `${l.name} (fermé)` })),
+  );
   private readonly router = inject(Router);
 
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
@@ -438,7 +442,7 @@ export class HeaderComponent {
     if (!user) {
       return '';
     }
-    return user.level ? LEVEL_LABELS[user.level] : ROLE_LABELS[user.role];
+    return user.level ? this.catalog.label(user.level) : ROLE_LABELS[user.role];
   });
 
   protected onDocumentClick(event: MouseEvent): void {

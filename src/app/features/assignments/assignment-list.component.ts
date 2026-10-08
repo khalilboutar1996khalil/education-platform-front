@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { RouterLink } from '@angular/router';
 import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS } from '../../core/models/user.model';
+
 import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { saveBlob } from '../../shared/save-blob';
@@ -23,6 +23,7 @@ import {
   TYPE_LABELS,
   isPending,
 } from './assignments.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 type Tab = 'ALL' | 'TP' | 'DEVOIR';
 
@@ -325,6 +326,7 @@ const ICON_DEVOIR = 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM
   `,
 })
 export class AssignmentListComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(AssignmentsApi);
   private readonly coursesApi = inject(CoursesApi);
   private readonly dashboard = inject(DashboardApi);
@@ -348,7 +350,7 @@ export class AssignmentListComponent {
   protected readonly tab = signal<Tab>('ALL');
   protected readonly form = signal<{ assignment: AssignmentDetail | null } | null>(null);
 
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
 
   protected readonly rows = computed(() => {
     const ids = new Set(this.courses().map((c) => c.id));

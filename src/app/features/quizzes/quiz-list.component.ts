@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS } from '../../core/models/user.model';
+
 import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { SpinnerComponent } from '../../shared/ui/spinner.component';
@@ -13,6 +13,7 @@ import { CourseSummary } from '../courses/courses.model';
 import { QuizFormComponent } from './quiz-form.component';
 import { QuizzesApi } from './quizzes.api';
 import { QUIZ_STATUS_LABELS, QUIZ_STATUS_TONE, QuizDetail, QuizStatus, QuizSummary } from './quizzes.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-quiz-list',
@@ -196,6 +197,7 @@ import { QUIZ_STATUS_LABELS, QUIZ_STATUS_TONE, QuizDetail, QuizStatus, QuizSumma
   `,
 })
 export class QuizListComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(QuizzesApi);
   private readonly coursesApi = inject(CoursesApi);
   private readonly router = inject(Router);
@@ -217,7 +219,7 @@ export class QuizListComponent {
   protected readonly courseFilter = signal<number | null>(null);
   protected readonly statusFilter = signal<QuizStatus | null>(null);
 
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
 
   /** The quiz API has no level filter, so scope by the level's modules. */
   protected readonly levelQuizzes = computed(() => {

@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_OPTIONS, Level } from '../../core/models/user.model';
+import { Level } from '../../core/models/user.model';
 import { applyServerErrors, errorMessageFor } from '../../shared/forms/form-errors';
 import { ModalComponent } from '../../shared/ui/modal.component';
 import { StudentsApi } from './students.api';
 import { InviteStudentResponse } from './students.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-invite-form',
@@ -28,7 +29,7 @@ import { InviteStudentResponse } from './students.model';
         <label class="ef-f">
           <span class="ef-f__label">Niveau</span>
           <select class="ef-field-input" formControlName="level">
-            @for (l of levels; track l.value) {
+            @for (l of levels(); track l.value) {
               <option [value]="l.value">{{ l.label }}</option>
             }
           </select>
@@ -46,6 +47,7 @@ import { InviteStudentResponse } from './students.model';
   `,
 })
 export class InviteFormComponent implements OnInit {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(StudentsApi);
   private readonly fb = inject(FormBuilder);
 
@@ -53,14 +55,14 @@ export class InviteFormComponent implements OnInit {
   readonly closed = output<void>();
   readonly invited = output<InviteStudentResponse>();
 
-  protected readonly levels = LEVEL_OPTIONS;
+  protected readonly levels = this.catalog.options;
   protected readonly saving = signal(false);
   protected readonly formError = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
     fullName: ['', [Validators.required, Validators.maxLength(255)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
-    level: this.fb.nonNullable.control<Level>('SECOND_AS'),
+    level: this.fb.nonNullable.control<Level>(''),
   });
 
   ngOnInit(): void {

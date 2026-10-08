@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS, ROLE_LABELS } from '../../core/models/user.model';
+import { ROLE_LABELS } from '../../core/models/user.model';
 import { ThemeService } from '../../core/services/theme.service';
 import { ToastService } from '../../core/services/toast.service';
 import { applyServerErrors, errorMessageFor } from '../../shared/forms/form-errors';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 function matchesNew(group: AbstractControl): ValidationErrors | null {
   const confirm = group.get('confirm')?.value;
@@ -138,6 +139,7 @@ function matchesNew(group: AbstractControl): ValidationErrors | null {
   `,
 })
 export class SettingsPageComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly auth = inject(AuthService);
   private readonly fb = inject(FormBuilder);
   private readonly toast = inject(ToastService);
@@ -153,7 +155,7 @@ export class SettingsPageComponent {
     if (!u) {
       return '';
     }
-    return u.level ? `${ROLE_LABELS[u.role]} · ${LEVEL_LABELS[u.level]}` : ROLE_LABELS[u.role];
+    return u.level ? `${ROLE_LABELS[u.role]} · ${this.catalog.label(u.level)}` : ROLE_LABELS[u.role];
   });
 
   protected readonly profile = this.fb.nonNullable.group({

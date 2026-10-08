@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, u
 import { forkJoin, of } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS, Level } from '../../core/models/user.model';
+import { Level } from '../../core/models/user.model';
 import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { timeAgo } from '../../shared/datetime';
@@ -13,6 +13,7 @@ import { CourseSummary } from '../courses/courses.model';
 import { AnnouncementComposerComponent, SaveResult } from './announcement-composer.component';
 import { AnnouncementsApi } from './announcements.api';
 import { Announcement } from './announcements.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-announcements-page',
@@ -120,6 +121,7 @@ import { Announcement } from './announcements.model';
   `,
 })
 export class AnnouncementsPageComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(AnnouncementsApi);
   private readonly coursesApi = inject(CoursesApi);
   private readonly auth = inject(AuthService);
@@ -134,7 +136,7 @@ export class AnnouncementsPageComponent {
   protected readonly busy = signal<number | null>(null);
   protected readonly editing = signal<Announcement | null>(null);
 
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
   protected readonly levelCourses = computed(() => this.courses().filter((c) => c.level === this.levels.current()));
 
   private readonly courseLevel = computed(() => new Map(this.courses().map((c) => [c.id, c.level])));
@@ -191,7 +193,7 @@ export class AnnouncementsPageComponent {
       return a.courseCode;
     }
     if (a.level) {
-      return `Tout le niveau · ${LEVEL_LABELS[a.level].replace(' informatique', '')}`;
+      return `Tout le niveau · ${this.catalog.short(a.level)}`;
     }
     return 'Toute la section';
   }

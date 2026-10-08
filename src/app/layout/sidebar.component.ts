@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../core/auth/auth.service';
-import { LEVEL_LABELS, ROLE_LABELS } from '../core/models/user.model';
+import { ROLE_LABELS } from '../core/models/user.model';
 import { DashboardApi } from '../features/dashboard/dashboard.api';
 import { navFor } from './nav.config';
+import { LevelCatalog } from '../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-sidebar',
@@ -264,6 +265,7 @@ import { navFor } from './nav.config';
   `,
 })
 export class SidebarComponent {
+  protected readonly catalog = inject(LevelCatalog);
   protected readonly auth = inject(AuthService);
 
   private readonly dashboard = inject(DashboardApi);
@@ -293,6 +295,6 @@ export class SidebarComponent {
     if (!user) {
       return '';
     }
-    return user.level ? LEVEL_LABELS[user.level] : ROLE_LABELS[user.role];
+    return user.level ? this.catalog.label(user.level) : ROLE_LABELS[user.role];
   });
 }
