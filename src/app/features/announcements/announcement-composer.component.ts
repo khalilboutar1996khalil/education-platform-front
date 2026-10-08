@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, ou
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS, Level } from '../../core/models/user.model';
+import { Level } from '../../core/models/user.model';
 import { applyServerErrors, errorMessageFor } from '../../shared/forms/form-errors';
 import { CourseSummary } from '../courses/courses.model';
 import { AnnouncementsApi } from './announcements.api';
 import { Announcement, AnnouncementRequest } from './announcements.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 /** "level" = this level only, "all" = every level, otherwise a module id. */
 type Scope = 'level' | 'all' | number;
@@ -84,6 +85,7 @@ export interface SaveResult {
   `,
 })
 export class AnnouncementComposerComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(AnnouncementsApi);
   private readonly fb = inject(FormBuilder);
 
@@ -97,7 +99,7 @@ export class AnnouncementComposerComponent {
 
   protected readonly saving = signal(false);
   protected readonly formError = signal<string | null>(null);
-  protected readonly levelShort = computed(() => LEVEL_LABELS[this.level()].replace(' informatique', ''));
+  protected readonly levelShort = computed(() => this.catalog.short(this.level()));
 
   protected readonly form = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],

@@ -91,6 +91,12 @@ const routes: Routes = [
       import('../blog/post-detail.component').then((m) => m.PostDetailComponent),
   },
   {
+    path: 'levels',
+    title: 'Niveaux · EduFlow',
+    canActivate: [roleGuard('ADMIN')],
+    loadComponent: () => import('../levels/levels-page.component').then((m) => m.LevelsPageComponent),
+  },
+  {
     path: 'settings',
     title: 'Paramètres · EduFlow',
     loadComponent: () =>

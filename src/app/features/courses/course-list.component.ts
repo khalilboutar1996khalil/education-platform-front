@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS } from '../../core/models/user.model';
+
 import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { SpinnerComponent } from '../../shared/ui/spinner.component';
 import { CourseFormComponent } from './course-form.component';
 import { CoursesApi } from './courses.api';
 import { CourseDetail, CourseSummary, coverFor } from './courses.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-course-list',
@@ -188,6 +189,7 @@ import { CourseDetail, CourseSummary, coverFor } from './courses.model';
   `,
 })
 export class CourseListComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(CoursesApi);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
@@ -200,7 +202,7 @@ export class CourseListComponent {
   protected readonly creating = signal(false);
 
   protected readonly isAdmin = this.auth.isAdmin;
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
 
   protected readonly heading = computed(() => (this.isAdmin() ? `Modules · ${this.levelLabel()}` : 'Mes modules'));
 
@@ -217,7 +219,7 @@ export class CourseListComponent {
         ...c,
         cover: coverFor(c.color, i),
         barColor: c.color || 'var(--ef-brand-500)',
-        levelShort: LEVEL_LABELS[c.level].replace('informatique', 'info'),
+        levelShort: this.catalog.label(c.level).replace('informatique', 'info'),
         progress,
         progressLabel: this.isAdmin() ? `${progress}% · moyenne de la classe` : `${progress}% terminé`,
       };

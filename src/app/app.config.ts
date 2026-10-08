@@ -8,6 +8,7 @@ import { routes } from './app.routes';
 import { AuthService } from './core/auth/auth.service';
 import { authInterceptor } from './core/http/auth.interceptor';
 import { errorInterceptor } from './core/http/error.interceptor';
+import { LevelCatalog } from './core/services/level-catalog.service';
 
 registerLocaleData(localeFr);
 
@@ -26,5 +27,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([errorInterceptor, authInterceptor])),
     // Settles authentication before the first route is evaluated, so guards never see a half state.
     provideAppInitializer(() => inject(AuthService).restoreSession()),
+    // Levels come from the API; every form and label needs them, signed in or not.
+    provideAppInitializer(() => inject(LevelCatalog).load()),
   ],
 };

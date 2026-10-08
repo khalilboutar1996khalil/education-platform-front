@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS } from '../../core/models/user.model';
+
 import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { SpinnerComponent } from '../../shared/ui/spinner.component';
 import { ClassCodeFormComponent } from './class-code-form.component';
 import { ClassCodesApi } from './class-codes.api';
 import { ClassCode } from './class-codes.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-class-codes-page',
@@ -89,6 +90,7 @@ import { ClassCode } from './class-codes.model';
   `,
 })
 export class ClassCodesPageComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(ClassCodesApi);
   private readonly toast = inject(ToastService);
   protected readonly levels = inject(LevelService);
@@ -99,7 +101,7 @@ export class ClassCodesPageComponent {
   protected readonly busy = signal<number | null>(null);
   protected readonly creating = signal(false);
 
-  protected readonly levelLabel = computed(() => LEVEL_LABELS[this.levels.current()]);
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
   protected readonly visible = computed(() => this.codes().filter((c) => c.level === this.levels.current()));
 
   constructor() {

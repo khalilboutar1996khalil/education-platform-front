@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
 import { AuthService } from '../core/auth/auth.service';
+import { LevelCatalog } from '../core/services/level-catalog.service';
 import { HeaderComponent } from './header.component';
 import { PAGE_TITLES } from './nav.config';
 import { SidebarComponent } from './sidebar.component';
@@ -86,6 +87,12 @@ import { SidebarComponent } from './sidebar.component';
 export class ShellComponent {
   private readonly router = inject(Router);
   private readonly auth = inject(AuthService);
+  private readonly catalog = inject(LevelCatalog);
+
+  constructor() {
+    // Signed in now: for an admin the list also includes closed levels
+    this.catalog.load().subscribe();
+  }
 
   /** Starts closed on a phone, open on a desktop. */
   protected readonly collapsed = signal(typeof window !== 'undefined' && window.innerWidth <= 860);

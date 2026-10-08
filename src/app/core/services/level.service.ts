@@ -1,8 +1,8 @@
-import { Injectable, effect, signal } from '@angular/core';
-import { LEVEL_OPTIONS, Level } from '../models/user.model';
+import { Injectable, effect, inject, signal } from '@angular/core';
+import { Level } from '../models/user.model';
+import { LevelCatalog } from './level-catalog.service';
 
 const LEVEL_KEY = 'eduflow.admin-level';
-const LEVELS: readonly Level[] = LEVEL_OPTIONS.map((o) => o.value);
 
 /**
  * The level the admin is currently working on, picked in the header.
@@ -10,6 +10,7 @@ const LEVELS: readonly Level[] = LEVEL_OPTIONS.map((o) => o.value);
  */
 @Injectable({ providedIn: 'root' })
 export class LevelService {
+  private readonly catalog = inject(LevelCatalog);
   readonly current = signal<Level>(readLevel());
 
   constructor() {
@@ -20,14 +21,21 @@ export class LevelService {
         /* storage unavailable: the choice just won't survive a reload */
       }
     });
+    // A remembered level may since have been removed, and a first visit has none: fall back to
+    // the first level in school order once the list is known.
+    effect(() => {
+      const levels = this.catalog.all();
+      if (levels.length && !levels.some((l) => l.code === this.current())) {
+        this.current.set(levels[0].code);
+      }
+    });
   }
 }
 
 function readLevel(): Level {
   try {
-    const raw = localStorage.getItem(LEVEL_KEY) as Level | null;
-    return raw && LEVELS.includes(raw) ? raw : 'SECOND_AS';
+    return localStorage.getItem(LEVEL_KEY) ?? '';
   } catch {
-    return 'SECOND_AS';
+    return '';
   }
 }

@@ -4,12 +4,13 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ApiError } from '../../../core/models/api.model';
 import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '../../../core/models/auth.model';
-import { Level, LEVEL_OPTIONS } from '../../../core/models/user.model';
+import { Level } from '../../../core/models/user.model';
 import { ToastService } from '../../../core/services/toast.service';
 import { applyServerErrors, errorMessageFor } from '../../../shared/forms/form-errors';
 import { ButtonComponent } from '../../../shared/ui/button.component';
 import { FormFieldComponent } from '../../../shared/ui/form-field.component';
 import { AuthLayoutComponent } from '../components/auth-layout.component';
+import { LevelCatalog } from '../../../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-register',
@@ -65,7 +66,8 @@ import { AuthLayoutComponent } from '../components/auth-layout.component';
 
         <ef-form-field label="Niveau" [error]="errorFor('level')">
           <select class="ef-input" formControlName="level">
-            @for (option of levels; track option.value) {
+            <option value="" disabled>Choisissez votre niveau</option>
+            @for (option of levels(); track option.value) {
               <option [value]="option.value">{{ option.label }}</option>
             }
           </select>
@@ -98,13 +100,14 @@ import { AuthLayoutComponent } from '../components/auth-layout.component';
   `,
 })
 export class RegisterComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
   private readonly fb = inject(NonNullableFormBuilder);
 
   protected readonly minLength = PASSWORD_MIN_LENGTH;
-  protected readonly levels = LEVEL_OPTIONS;
+  protected readonly levels = this.catalog.options;
 
   protected readonly form = this.fb.group({
     fullName: ['', [Validators.required, Validators.maxLength(255)]],
@@ -117,7 +120,7 @@ export class RegisterComponent {
         Validators.maxLength(PASSWORD_MAX_LENGTH),
       ],
     ],
-    level: ['SECOND_AS' as Level, [Validators.required]],
+    level: ['' as Level, [Validators.required]],
   });
 
   protected readonly submitting = signal(false);

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, signal } f
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { ApiError } from '../../core/models/api.model';
-import { LEVEL_LABELS } from '../../core/models/user.model';
+
 import { ToastService } from '../../core/services/toast.service';
 import { SpinnerComponent } from '../../shared/ui/spinner.component';
 import { ChapterFormComponent } from './chapter-form.component';
@@ -10,6 +10,7 @@ import { CourseFormComponent } from './course-form.component';
 import { CoursesApi } from './courses.api';
 import { Chapter, CourseDetail, Lesson, LESSON_TYPE_LABELS, LessonType, coverFor, formatMinutes } from './courses.model';
 import { LessonFormComponent } from './lesson-form.component';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 const LESSON_ICONS: Record<LessonType, string> = {
   VIDEO: 'M5 3l14 9-14 9V3z',
@@ -522,6 +523,7 @@ const LESSON_ICONS: Record<LessonType, string> = {
   `,
 })
 export class CourseDetailComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(CoursesApi);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
@@ -544,7 +546,7 @@ export class CourseDetailComponent {
   protected readonly cover = computed(() => coverFor(this.course()?.color ?? null, 0));
   protected readonly levelShort = computed(() => {
     const c = this.course();
-    return c ? LEVEL_LABELS[c.level].replace('informatique', 'info') : '';
+    return c ? this.catalog.label(c.level).replace('informatique', 'info') : '';
   });
 
   protected readonly totals = computed(() => {

@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, ou
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiError } from '../../core/models/api.model';
-import { Level, LEVEL_OPTIONS } from '../../core/models/user.model';
+import { Level } from '../../core/models/user.model';
 import { applyServerErrors, errorMessageFor } from '../../shared/forms/form-errors';
 import { ModalComponent } from '../../shared/ui/modal.component';
 import { CourseSummary } from '../courses/courses.model';
 import { formatSize } from '../assignments/assignments.model';
 import { ResourcesApi } from './resources.api';
 import { RESOURCE_ACCEPT, RESOURCE_TYPE_LABELS, Resource, ResourceType } from './resources.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 /** Add a resource (file upload, or a link), or edit the details of `resource` — the file itself cannot be swapped. */
 @Component({
@@ -32,7 +33,7 @@ import { RESOURCE_ACCEPT, RESOURCE_TYPE_LABELS, Resource, ResourceType } from '.
             <span class="ef-f__label">Niveau</span>
             <select class="ef-field-input" formControlName="level" (change)="form.controls.courseId.setValue(null)">
               <option [ngValue]="null">Tous les niveaux</option>
-              @for (l of levels; track l.value) {
+              @for (l of levels(); track l.value) {
                 <option [ngValue]="l.value">{{ l.label }}</option>
               }
             </select>
@@ -124,6 +125,7 @@ import { RESOURCE_ACCEPT, RESOURCE_TYPE_LABELS, Resource, ResourceType } from '.
   `,
 })
 export class ResourceFormComponent implements OnInit {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(ResourcesApi);
   private readonly fb = inject(FormBuilder);
 
@@ -134,7 +136,7 @@ export class ResourceFormComponent implements OnInit {
   readonly closed = output<void>();
   readonly saved = output<Resource>();
 
-  protected readonly levels = LEVEL_OPTIONS;
+  protected readonly levels = this.catalog.options;
   protected readonly types = (Object.keys(RESOURCE_TYPE_LABELS) as ResourceType[]).map((value) => ({
     value,
     label: RESOURCE_TYPE_LABELS[value],

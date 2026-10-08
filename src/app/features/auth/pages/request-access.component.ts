@@ -3,11 +3,12 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { RouterLink } from '@angular/router';
 import { AuthApi } from '../../../core/auth/auth.api';
 import { ApiError } from '../../../core/models/api.model';
-import { LEVEL_OPTIONS, Level } from '../../../core/models/user.model';
+import { Level } from '../../../core/models/user.model';
 import { applyServerErrors, errorMessageFor } from '../../../shared/forms/form-errors';
 import { ButtonComponent } from '../../../shared/ui/button.component';
 import { FormFieldComponent } from '../../../shared/ui/form-field.component';
 import { AuthLayoutComponent } from '../components/auth-layout.component';
+import { LevelCatalog } from '../../../core/services/level-catalog.service';
 
 @Component({
   selector: 'ef-request-access',
@@ -63,7 +64,8 @@ import { AuthLayoutComponent } from '../components/auth-layout.component';
 
           <ef-form-field label="Niveau" [error]="errorFor('level')">
             <select class="ef-input" formControlName="level">
-              @for (option of levels; track option.value) {
+              <option value="" disabled>Choisissez votre niveau</option>
+              @for (option of levels(); track option.value) {
                 <option [value]="option.value">{{ option.label }}</option>
               }
             </select>
@@ -156,15 +158,16 @@ import { AuthLayoutComponent } from '../components/auth-layout.component';
   `,
 })
 export class RequestAccessComponent {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(AuthApi);
   private readonly fb = inject(NonNullableFormBuilder);
 
-  protected readonly levels = LEVEL_OPTIONS;
+  protected readonly levels = this.catalog.options;
 
   protected readonly form = this.fb.group({
     fullName: ['', [Validators.required, Validators.maxLength(255)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(255)]],
-    level: ['SECOND_AS' as Level, [Validators.required]],
+    level: ['' as Level, [Validators.required]],
     message: ['', [Validators.maxLength(1000)]],
   });
 

@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiError } from '../../core/models/api.model';
-import { Level, LEVEL_OPTIONS } from '../../core/models/user.model';
+import { Level } from '../../core/models/user.model';
 import { applyServerErrors, errorMessageFor } from '../../shared/forms/form-errors';
 import { ModalComponent } from '../../shared/ui/modal.component';
 import { CoursesApi } from './courses.api';
 import { COURSE_COLORS, CourseDetail } from './courses.model';
+import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 /** Create a module, or edit one when `course` is given. */
 @Component({
@@ -31,7 +32,7 @@ import { COURSE_COLORS, CourseDetail } from './courses.model';
         <label class="f">
           <span class="f__label">Niveau</span>
           <select class="ef-field-input" formControlName="level">
-            @for (opt of levels; track opt.value) {
+            @for (opt of levels(); track opt.value) {
               <option [value]="opt.value">{{ opt.label }}</option>
             }
           </select>
@@ -92,15 +93,16 @@ import { COURSE_COLORS, CourseDetail } from './courses.model';
   `,
 })
 export class CourseFormComponent implements OnInit {
+  protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(CoursesApi);
   private readonly fb = inject(FormBuilder);
 
   readonly course = input<CourseDetail | null>(null);
-  readonly defaultLevel = input<Level>('SECOND_AS');
+  readonly defaultLevel = input<Level>('');
   readonly closed = output<void>();
   readonly saved = output<CourseDetail>();
 
-  protected readonly levels = LEVEL_OPTIONS;
+  protected readonly levels = this.catalog.options;
   protected readonly colors = COURSE_COLORS;
   protected readonly saving = signal(false);
   protected readonly formError = signal<string | null>(null);
@@ -108,7 +110,7 @@ export class CourseFormComponent implements OnInit {
   protected readonly form = this.fb.nonNullable.group({
     title: ['', [Validators.required, Validators.maxLength(255)]],
     code: ['', [Validators.required, Validators.maxLength(20), Validators.pattern(/^[A-Z0-9-]+$/)]],
-    level: ['SECOND_AS' as Level, Validators.required],
+    level: ['' as Level, Validators.required],
     color: [COURSE_COLORS[0]],
     description: ['', Validators.maxLength(2000)],
   });
