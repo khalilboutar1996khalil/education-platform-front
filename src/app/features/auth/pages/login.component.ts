@@ -45,7 +45,7 @@ const DEMO_PASSWORD = 'Passw0rd-Demo';
           />
         </ef-form-field>
 
-        <p class="forgot">Mot de passe oublié ? Contactez votre professeur.</p>
+        <a class="forgot" routerLink="/forgot-password">Mot de passe oublié ?</a>
 
         <button efButton type="submit" [block]="true" [loading]="submitting()" [disabled]="lockoutSeconds() > 0">
           @if (lockoutSeconds() > 0) {
@@ -84,7 +84,7 @@ const DEMO_PASSWORD = 'Passw0rd-Demo';
       justify-self: end;
       margin: -4px 0 0;
       font-size: 12.5px;
-      color: var(--ef-text-muted);
+      font-weight: 600;
     }
 
     .demo {
