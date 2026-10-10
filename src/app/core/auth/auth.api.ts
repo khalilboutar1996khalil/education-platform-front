@@ -48,6 +48,15 @@ export class AuthApi {
     return this.http.post<void>(`${this.base}/me/password`, body);
   }
 
+  /** Always 204, whether or not the address has an account. */
+  forgotPassword(body: { email: string }): Observable<void> {
+    return this.http.post<void>(`${this.base}/auth/forgot-password`, body);
+  }
+
+  resetPassword(body: { token: string; newPassword: string }): Observable<void> {
+    return this.http.post<void>(`${this.base}/auth/reset-password`, body);
+  }
+
   submitAccessRequest(body: SubmitAccessRequest): Observable<void> {
     return this.http.post<void>(`${this.base}/access-requests`, body);
   }

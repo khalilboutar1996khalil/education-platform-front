@@ -9,6 +9,8 @@ const PUBLIC_AUTH_PATHS = [
   '/auth/register',
   '/auth/refresh',
   '/auth/logout',
+  '/auth/forgot-password',
+  '/auth/reset-password',
 ];
 
 /** Public endpoints must never carry a bearer token or trigger a refresh attempt. */
