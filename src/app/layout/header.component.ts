@@ -97,7 +97,7 @@ import { LevelCatalog } from '../core/services/level-catalog.service';
               <div class="avatar avatar--lg">{{ auth.user()?.initials }}</div>
               <div class="menu__who">
                 <div class="menu__name">{{ auth.user()?.fullName }}</div>
-                <div class="menu__email">{{ auth.user()?.email }}</div>
+                <div class="menu__email">{{ auth.user()?.email ?? auth.user()?.username }}</div>
                 <div class="menu__tag">{{ subtitle() }}</div>
               </div>
             </div>

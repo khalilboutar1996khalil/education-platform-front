@@ -29,7 +29,17 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [],
+            "allowedCommonJsDependencies": [
+              "qrcode",
+              "dijkstrajs",
+              "html2canvas",
+              "canvg",
+              "rgbcolor",
+              "core-js",
+              "raf",
+              "dompurify"
+            ]
           },
           "configurations": {
             "production": {

@@ -1,8 +1,8 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, catchError, finalize, firstValueFrom, map, shareReplay, switchMap, tap, throwError } from 'rxjs';
-import { LoginRequest, LoginResponse, RegisterRequest, TokenPair } from '../models/auth.model';
-import { User } from '../models/user.model';
+import { LoginRequest, LoginResponse, RedeemCouponRequest, RegisterRequest, TokenPair } from '../models/auth.model';
+import { User, signInId } from '../models/user.model';
 import { AuthApi } from './auth.api';
 import { TokenStorage } from './token-storage';
 
@@ -39,6 +39,14 @@ export class AuthService {
     );
   }
 
+  /** Activating a book creates the account and signs it in, as registering does. */
+  activateBook(request: RedeemCouponRequest): Observable<User> {
+    return this.api.redeemCoupon(request).pipe(
+      tap((response) => this.startSession(response)),
+      map((response) => response.user),
+    );
+  }
+
   updateProfile(fullName: string): Observable<User> {
     const notifyByEmail = this._user()?.notifyByEmail ?? true;
     return this.api.updateProfile({ fullName, notifyByEmail }).pipe(tap((user) => this._user.set(user)));
@@ -49,7 +57,7 @@ export class AuthService {
    * signing straight back in with the new password is what keeps the user logged in.
    */
   changePassword(currentPassword: string, newPassword: string): Observable<void> {
-    const email = this._user()?.email ?? '';
+    const email = signInId(this._user());
     return this.api.changePassword({ currentPassword, newPassword }).pipe(
       switchMap(() => this.api.login({ email, password: newPassword })),
       tap((response) => this.startSession(response)),

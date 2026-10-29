@@ -35,6 +35,14 @@ const routes: Routes = [
     loadComponent: () =>
       import('./pages/reset-password.component').then((m) => m.ResetPasswordComponent),
   },
+  {
+    // Where the QR code printed in a book leads: /activer?serial=3-0042
+    path: 'activer',
+    canActivate: [guestGuard],
+    title: 'Activer mon livre · EduFlow',
+    loadComponent: () =>
+      import('./pages/activate-book.component').then((m) => m.ActivateBookComponent),
+  },
 ];
 
 export default routes;

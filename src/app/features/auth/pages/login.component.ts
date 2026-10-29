@@ -23,12 +23,14 @@ const DEMO_PASSWORD = 'Passw0rd-Demo';
           <div class="ef-alert ef-alert--error" role="alert">{{ message }}</div>
         }
 
-        <ef-form-field label="E-mail" [error]="errorFor('email')">
+        <ef-form-field label="E-mail ou identifiant" [error]="errorFor('email')">
           <input
             class="ef-input"
-            type="email"
-            autocomplete="email"
-            placeholder="vous@eduflow.dz"
+            type="text"
+            autocomplete="username"
+            autocapitalize="none"
+            spellcheck="false"
+            placeholder="vous@exemple.com ou amina.bensalem"
             formControlName="email"
             [class.ef-input--invalid]="!!errorFor('email')"
           />
@@ -71,6 +73,9 @@ const DEMO_PASSWORD = 'Passw0rd-Demo';
 
       <p class="signup">
         Pas de compte ? <a routerLink="/register">Créer mon compte</a>
+      </p>
+      <p class="signup signup--book">
+        Vous avez un livre EduFlow ? <a routerLink="/activer">Activer mon livre</a>
       </p>
     </ef-auth-layout>
   `,
@@ -133,6 +138,10 @@ const DEMO_PASSWORD = 'Passw0rd-Demo';
     .signup a {
       font-weight: 700;
     }
+
+    .signup--book {
+      margin-top: 6px;
+    }
   `,
 })
 export class LoginComponent {
@@ -143,7 +152,8 @@ export class LoginComponent {
   private readonly fb = inject(NonNullableFormBuilder);
 
   protected readonly form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    // An email address, or the username a book coupon gave a student
+    email: ['', [Validators.required]],
     password: ['', [Validators.required]],
   });
 

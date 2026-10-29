@@ -90,6 +90,12 @@ const routes: Routes = [
     loadComponent: () => import('../levels/levels-page.component').then((m) => m.LevelsPageComponent),
   },
   {
+    path: 'coupons',
+    title: 'Coupons des livres · EduFlow',
+    canActivate: [roleGuard('ADMIN')],
+    loadComponent: () => import('../coupons/coupons-page.component').then((m) => m.CouponsPageComponent),
+  },
+  {
     path: 'settings',
     title: 'Paramètres · EduFlow',
     loadComponent: () =>
