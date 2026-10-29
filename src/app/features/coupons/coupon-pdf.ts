@@ -67,10 +67,11 @@ export async function buildCouponPdf(
     const url = activationUrl(coupon.serial);
     const host = printable(new URL(url).host);
     const qr = await QRCode.toDataURL(url, {
+      // Black on white with a quiet zone: what every phone camera reads first time, even on
+      // cheap paper. Coloured modules look nicer and scan noticeably worse.
       errorCorrectionLevel: 'M',
-      margin: 0,
+      margin: 2,
       width: 640,
-      color: { dark: '#14532dff', light: '#ffffffff' },
     });
 
     // ---------- header band ----------
