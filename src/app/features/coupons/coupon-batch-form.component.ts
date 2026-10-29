@@ -34,8 +34,9 @@ import { CouponBatch } from './coupons.model';
           <span class="ef-f__hint">Entre 1 et 2000. Chaque exemplaire reçoit son propre QR code et son propre code.</span>
         </label>
         <label class="ef-f">
-          <span class="ef-f__label">Nom du lot <span class="opt">(facultatif)</span></span>
-          <input class="ef-field-input" formControlName="label" maxlength="255" placeholder="ex. Livre 7e — édition 2026" />
+          <span class="ef-f__label">Titre du livre <span class="opt">(facultatif)</span></span>
+          <input class="ef-field-input" formControlName="label" maxlength="255" placeholder="ex. Cours de 7e année" />
+          <span class="ef-f__hint">Affiché encadré en haut de chaque page, avec l'année scolaire. Vide : « Cours de » + le niveau.</span>
         </label>
 
         @if (formError()) {

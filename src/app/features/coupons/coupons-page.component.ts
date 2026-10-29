@@ -220,7 +220,7 @@ export class CouponsPageComponent implements OnInit {
     this.api.listCoupons(batch.id).subscribe({
       next: async (list) => {
         try {
-          const blob = await buildCouponPdf(list, this.catalog.label(batch.level), this.format());
+          const blob = await buildCouponPdf(list, this.catalog.label(batch.level), batch.label, this.format());
           saveFile(blob, `coupons-lot-${batch.id}-${this.format()}.pdf`);
         } catch {
           this.toast.error('Le PDF n’a pas pu être créé. Réessayez.');

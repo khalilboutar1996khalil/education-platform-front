@@ -36,9 +36,21 @@ const WHITE: Rgb = [255, 255, 255];
  *
  * Loaded on demand, so the libraries only download when an admin actually prints.
  */
+/** The school year a book printed today is for: from September on, it is the year that starts. */
+export function schoolYear(today = new Date()): string {
+  const year = today.getFullYear();
+  const start = today.getMonth() >= 7 ? year : year - 1; // August already prints for September
+  return `${start} / ${start + 1}`;
+}
+
+/**
+ * @param title what the framed title says, e.g. the batch name "Cours de 7e année"; the level name
+ *              is used when the batch has none
+ */
 export async function buildCouponPdf(
   coupons: Coupon[],
   levelName: string,
+  title: string | null,
   format: PageFormat,
 ): Promise<Blob> {
   const [{ jsPDF }, qrModule] = await Promise.all([import('jspdf'), import('qrcode')]);
@@ -51,6 +63,8 @@ export async function buildCouponPdf(
   const k = W / 210;
   const m = 18 * k; // side margin
   const level = printable(levelName);
+  const bookTitle = printable(title?.trim() || `Cours de ${levelName}`);
+  const yearLine = `Année scolaire ${schoolYear()}`;
 
   const fill = (c: Rgb) => doc.setFillColor(c[0], c[1], c[2]);
   const stroke = (c: Rgb) => doc.setDrawColor(c[0], c[1], c[2]);
@@ -109,8 +123,23 @@ export async function buildCouponPdf(
     ink(GREEN_DARK);
     doc.text(level, px + pillW / 2, py + pillH / 2 + 1.3 * k, { align: 'center', maxWidth: pillW - 6 * k });
 
+    // ---------- framed book title ----------
+    const frameW = W - 2 * m;
+    const frameH = 24 * k;
+    const frameY = bandH + 10 * k;
+    fill(GREEN_SOFT);
+    stroke(GREEN);
+    doc.setLineWidth(0.9 * k);
+    doc.roundedRect(m, frameY, frameW, frameH, 4 * k, 4 * k, 'FD');
+    ink(GREEN_DARK);
+    font('bold', 17);
+    doc.text(bookTitle, W / 2, frameY + 10.5 * k, { align: 'center', maxWidth: frameW - 12 * k });
+    ink(MUTED);
+    font('bold', 11);
+    doc.text(yearLine, W / 2, frameY + 18 * k, { align: 'center' });
+
     // ---------- title ----------
-    let y = bandH + 22 * k;
+    let y = frameY + frameH + 15 * k;
     ink(INK);
     font('bold', 23);
     doc.text('Activez votre livre en ligne', W / 2, y, { align: 'center' });
@@ -121,7 +150,7 @@ export async function buildCouponPdf(
       W / 2, y, { align: 'center', maxWidth: W - 2 * m });
 
     // ---------- QR card + steps ----------
-    const cardY = y + 10 * k;
+    const cardY = y + 8 * k;
     const cardW = 82 * k;
     const cardH = 96 * k;
     fill(WHITE);
@@ -167,7 +196,7 @@ export async function buildCouponPdf(
     }
 
     // ---------- activation code (scratch area) ----------
-    y = cardY + cardH + 16 * k;
+    y = cardY + cardH + 13 * k;
     ink(GREEN_DARK);
     font('bold', 9);
     doc.text("CODE D'ACTIVATION", W / 2, y, { align: 'center', charSpace: 0.8 * k });
