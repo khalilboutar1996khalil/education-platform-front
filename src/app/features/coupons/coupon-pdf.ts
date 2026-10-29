@@ -17,10 +17,24 @@ function printable(text: string): string {
   return text.replace(/ᵉ/g, 'e').replace(/[’‘]/g, "'").replace(/[^\u0000-ÿ«»]/g, '');
 }
 
+type Rgb = [number, number, number];
+
+const INK: Rgb = [15, 23, 42];
+const MUTED: Rgb = [100, 116, 139];
+const GREEN_DARK: Rgb = [20, 83, 45];
+const GREEN: Rgb = [22, 163, 74];
+const GREEN_SOFT: Rgb = [220, 252, 231];
+const GREEN_LINE: Rgb = [134, 239, 172];
+const SCRATCH: Rgb = [226, 232, 240];
+const WHITE: Rgb = [255, 255, 255];
+
 /**
- * One page per copy of the book: the QR code, the book's number, and the activation code in a
- * box sized for a scratch-off sticker. Loaded on demand, so the libraries only download when an
- * admin actually prints.
+ * One page per copy of the book, laid out as the book's activation page: a header band, the QR
+ * code in a card beside three numbered steps, the activation code in a grey box sized for a
+ * scratch-off sticker, and a footer with the address to type when there is no QR reader.
+ * Every measure is written for A4 and scaled, so A5 keeps the same proportions.
+ *
+ * Loaded on demand, so the libraries only download when an admin actually prints.
  */
 export async function buildCouponPdf(
   coupons: Coupon[],
@@ -32,93 +46,172 @@ export async function buildCouponPdf(
   const QRCode = (qrModule as unknown as { default?: typeof qrModule }).default ?? qrModule;
 
   const doc = new jsPDF({ unit: 'mm', format, orientation: 'portrait' });
-  const width = doc.internal.pageSize.getWidth();
-  const height = doc.internal.pageSize.getHeight();
-  // A5 is A4 scaled by 1/√2; every measure below is written for A4 and scaled
-  const k = width / 210;
-  const cx = width / 2;
-  const green: [number, number, number] = [22, 101, 52];
-  const grey: [number, number, number] = [100, 116, 139];
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+  const k = W / 210;
+  const m = 18 * k; // side margin
+  const level = printable(levelName);
+
+  const fill = (c: Rgb) => doc.setFillColor(c[0], c[1], c[2]);
+  const stroke = (c: Rgb) => doc.setDrawColor(c[0], c[1], c[2]);
+  const ink = (c: Rgb) => doc.setTextColor(c[0], c[1], c[2]);
+  const font = (style: 'normal' | 'bold', size: number, family = 'helvetica') => {
+    doc.setFont(family, style);
+    doc.setFontSize(size * k);
+  };
 
   for (const [index, coupon] of coupons.entries()) {
     if (index > 0) {
       doc.addPage(format, 'portrait');
     }
     const url = activationUrl(coupon.serial);
-    const qr = await QRCode.toDataURL(url, { errorCorrectionLevel: 'M', margin: 1, width: 600 });
+    const host = printable(new URL(url).host);
+    const qr = await QRCode.toDataURL(url, {
+      errorCorrectionLevel: 'M',
+      margin: 0,
+      width: 640,
+      color: { dark: '#14532dff', light: '#ffffffff' },
+    });
 
-    let y = 34 * k;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(26 * k);
-    doc.setTextColor(...green);
-    doc.text('EduFlow', cx, y, { align: 'center' });
+    // ---------- header band ----------
+    const bandH = 40 * k;
+    fill(GREEN_DARK);
+    doc.rect(0, 0, W, bandH, 'F');
+    fill(GREEN);
+    doc.rect(0, bandH, W, 2.2 * k, 'F');
 
-    y += 10 * k;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(14 * k);
-    doc.setTextColor(30, 41, 59);
-    doc.text(printable(levelName), cx, y, { align: 'center' });
+    // logo: the initial in a rounded square, like the app's icon
+    const logo = 14 * k;
+    const lx = m;
+    const ly = (bandH - logo) / 2;
+    fill(GREEN);
+    doc.roundedRect(lx, ly, logo, logo, 3.5 * k, 3.5 * k, 'F');
+    ink(WHITE);
+    font('bold', 20);
+    doc.text('E', lx + logo / 2, ly + logo / 2 + 2.6 * k, { align: 'center' });
 
-    y += 16 * k;
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(17 * k);
-    doc.text('Activez votre livre en ligne', cx, y, { align: 'center' });
+    ink(WHITE);
+    font('bold', 21);
+    doc.text('EduFlow', lx + logo + 5 * k, bandH / 2 + 0.5 * k);
+    ink(GREEN_LINE);
+    font('bold', 7.5);
+    doc.text('PLATEFORME PEDAGOGIQUE', lx + logo + 5 * k, bandH / 2 + 6 * k, { charSpace: 0.6 * k });
 
-    const qrSize = 70 * k;
+    // level pill, right-aligned in the band
+    font('bold', 10);
+    const pillW = Math.min(doc.getTextWidth(level) + 12 * k, W / 2 - m);
+    const pillH = 10 * k;
+    const px = W - m - pillW;
+    const py = (bandH - pillH) / 2;
+    fill(WHITE);
+    doc.roundedRect(px, py, pillW, pillH, pillH / 2, pillH / 2, 'F');
+    ink(GREEN_DARK);
+    doc.text(level, px + pillW / 2, py + pillH / 2 + 1.3 * k, { align: 'center', maxWidth: pillW - 6 * k });
+
+    // ---------- title ----------
+    let y = bandH + 22 * k;
+    ink(INK);
+    font('bold', 23);
+    doc.text('Activez votre livre en ligne', W / 2, y, { align: 'center' });
     y += 8 * k;
-    doc.addImage(qr, 'PNG', cx - qrSize / 2, y, qrSize, qrSize);
+    ink(MUTED);
+    font('normal', 11);
+    doc.text('Cours, quiz et TP de votre niveau, accessibles depuis votre téléphone ou votre ordinateur.',
+      W / 2, y, { align: 'center', maxWidth: W - 2 * m });
 
-    y += qrSize + 8 * k;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(11 * k);
-    doc.setTextColor(...grey);
-    doc.text('Scannez ce QR code avec votre téléphone', cx, y, { align: 'center' });
+    // ---------- QR card + steps ----------
+    const cardY = y + 10 * k;
+    const cardW = 82 * k;
+    const cardH = 96 * k;
+    fill(WHITE);
+    stroke(GREEN_LINE);
+    doc.setLineWidth(0.7 * k);
+    doc.roundedRect(m, cardY, cardW, cardH, 5 * k, 5 * k, 'FD');
+    const qrSize = 64 * k;
+    doc.addImage(qr, 'PNG', m + (cardW - qrSize) / 2, cardY + 9 * k, qrSize, qrSize);
+    fill(GREEN_SOFT);
+    const tagW = 44 * k;
+    const tagH = 9 * k;
+    doc.roundedRect(m + (cardW - tagW) / 2, cardY + cardH - tagH - 8 * k, tagW, tagH, tagH / 2, tagH / 2, 'F');
+    ink(GREEN_DARK);
+    font('bold', 10);
+    doc.text('Scannez-moi', m + cardW / 2, cardY + cardH - 8 * k - tagH / 2 + 1.3 * k, { align: 'center' });
 
-    y += 12 * k;
-    doc.setFontSize(12 * k);
-    doc.setTextColor(30, 41, 59);
-    doc.text(`N° du livre : ${coupon.serial}`, cx, y, { align: 'center' });
+    const sx = m + cardW + 12 * k;
+    const sw = W - m - sx;
+    const steps: [string, string][] = [
+      ['Scannez le QR code', 'avec l\'appareil photo de votre téléphone.'],
+      ['Grattez la zone grise', 'ci-dessous et saisissez le code avec votre prénom et votre nom.'],
+      ['Notez votre identifiant', 'affiché par le site : il vous servira pour vous reconnecter.'],
+    ];
+    let stepY = cardY + 6 * k;
+    for (const [i, [title, text]] of steps.entries()) {
+      const r = 5.5 * k;
+      fill(GREEN);
+      doc.circle(sx + r, stepY + r, r, 'F');
+      ink(WHITE);
+      font('bold', 12);
+      doc.text(String(i + 1), sx + r, stepY + r + 1.6 * k, { align: 'center' });
 
-    // The box the scratch-off sticker covers
-    const boxW = 90 * k;
-    const boxH = 28 * k;
-    y += 8 * k;
-    doc.setDrawColor(...green);
-    doc.setLineWidth(0.6 * k);
-    doc.setLineDashPattern([2 * k, 1.5 * k], 0);
-    doc.roundedRect(cx - boxW / 2, y, boxW, boxH, 3 * k, 3 * k);
+      const tx = sx + 2 * r + 5 * k;
+      const tw = sw - 2 * r - 5 * k;
+      ink(INK);
+      font('bold', 12);
+      doc.text(printable(title), tx, stepY + 4.2 * k);
+      ink(MUTED);
+      font('normal', 10);
+      const lines = doc.splitTextToSize(printable(text), tw) as string[];
+      doc.text(lines, tx, stepY + 10 * k, { lineHeightFactor: 1.35 });
+      stepY += 13 * k + lines.length * 4.8 * k + 6 * k;
+    }
+
+    // ---------- activation code (scratch area) ----------
+    y = cardY + cardH + 16 * k;
+    ink(GREEN_DARK);
+    font('bold', 9);
+    doc.text("CODE D'ACTIVATION", W / 2, y, { align: 'center', charSpace: 0.8 * k });
+
+    const boxW = 112 * k;
+    const boxH = 30 * k;
+    const bx = (W - boxW) / 2;
+    y += 4 * k;
+    fill(SCRATCH);
+    stroke(MUTED);
+    doc.setLineWidth(0.5 * k);
+    doc.setLineDashPattern([2.2 * k, 1.6 * k], 0);
+    doc.roundedRect(bx, y, boxW, boxH, 5 * k, 5 * k, 'FD');
     doc.setLineDashPattern([], 0);
-
-    doc.setFontSize(9 * k);
-    doc.setTextColor(...grey);
-    doc.text("CODE D'ACTIVATION", cx, y + 7 * k, { align: 'center' });
-    doc.setFont('courier', 'bold');
-    doc.setFontSize(22 * k);
-    doc.setTextColor(15, 23, 42);
-    doc.text(formatCode(coupon.code), cx, y + 19 * k, { align: 'center' });
+    ink(INK);
+    font('bold', 26, 'courier');
+    doc.text(formatCode(coupon.code), W / 2, y + boxH / 2 + 3 * k, { align: 'center', charSpace: 1 * k });
 
     y += boxH + 7 * k;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9.5 * k);
-    doc.setTextColor(...grey);
-    doc.text('Grattez la zone pour découvrir votre code.', cx, y, { align: 'center' });
+    ink(MUTED);
+    font('normal', 9.5);
+    doc.text('Zone à gratter. Ce code est personnel et ne fonctionne qu\'une seule fois.',
+      W / 2, y, { align: 'center', maxWidth: W - 2 * m });
 
-    // How it works, at the foot of the page
-    const steps = [
-      '1. Scannez le QR code (ou ouvrez ' + printable(new URL(url).host) + '/activer).',
-      '2. Grattez la zone et saisissez le code, votre prénom et votre nom.',
-      '3. Notez l\'identifiant que le site vous donne pour vous reconnecter.',
-    ];
-    doc.setFontSize(9.5 * k);
-    doc.setTextColor(71, 85, 105);
-    let footY = height - 30 * k;
-    for (const step of steps) {
-      doc.text(printable(step), 22 * k, footY);
-      footY += 6 * k;
-    }
-    doc.setFontSize(8 * k);
-    doc.setTextColor(...grey);
-    doc.text('Ce code ne fonctionne qu\'une seule fois.', 22 * k, footY + 2 * k);
+    // ---------- footer band ----------
+    const footH = 24 * k;
+    const fy = H - footH;
+    fill(GREEN_SOFT);
+    doc.rect(0, fy, W, footH, 'F');
+    ink(GREEN_DARK);
+    font('normal', 9.5);
+    doc.text('Pas de QR code ? Ouvrez', m, fy + 10 * k);
+    font('bold', 11);
+    doc.text(`${host}/activer`, m, fy + 16 * k);
+
+    const serialLabel = `N° ${coupon.serial}`;
+    font('bold', 12);
+    const sW = doc.getTextWidth(serialLabel) + 10 * k;
+    const sH = 10 * k;
+    fill(WHITE);
+    stroke(GREEN_LINE);
+    doc.setLineWidth(0.5 * k);
+    doc.roundedRect(W - m - sW, fy + (footH - sH) / 2, sW, sH, 2.5 * k, 2.5 * k, 'FD');
+    ink(GREEN_DARK);
+    doc.text(serialLabel, W - m - sW / 2, fy + footH / 2 + 1.5 * k, { align: 'center' });
   }
 
   return doc.output('blob');
