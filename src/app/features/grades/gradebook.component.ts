@@ -264,7 +264,7 @@ export class GradebookComponent {
 
   protected readonly visible = computed(() => {
     const q = this.query().trim().toLowerCase();
-    return q ? this.table().filter((r) => `${r.student.fullName} ${r.student.email}`.toLowerCase().includes(q)) : this.table();
+    return q ? this.table().filter((r) => `${r.student.fullName} ${r.student.email ?? ''} ${r.student.username ?? ''}`.toLowerCase().includes(q)) : this.table();
   });
 
   /** One column per assessment label, oldest first. A pair's partner gets a hand-entered copy of the TP mark, so labels, not kinds, define a column. */

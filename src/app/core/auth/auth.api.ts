@@ -7,6 +7,7 @@ import {
   LoginRequest,
   LoginResponse,
   RefreshRequest,
+  RedeemCouponRequest,
   RegisterRequest,
   SubmitAccessRequest,
   TokenPair,
@@ -26,6 +27,11 @@ export class AuthApi {
   /** Returns a full session, so registering signs the student in without a second call. */
   register(body: RegisterRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.base}/auth/register`, body);
+  }
+
+  /** Creates the student account for the book's level and returns a session, like register. */
+  redeemCoupon(body: RedeemCouponRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.base}/coupons/redeem`, body);
   }
 
   refresh(body: RefreshRequest): Observable<TokenPair> {

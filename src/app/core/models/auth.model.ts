@@ -5,6 +5,7 @@ export const PASSWORD_MIN_LENGTH = 10;
 export const PASSWORD_MAX_LENGTH = 100;
 
 export interface LoginRequest {
+  /** An email address, or the username of a book-coupon student. */
   email: string;
   password: string;
 }
@@ -49,4 +50,13 @@ export interface UpdateProfileRequest {
 export interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;
+}
+
+/** Activating a book: the serial comes from the QR code, the code from the scratch-off panel. */
+export interface RedeemCouponRequest {
+  serial: string;
+  code: string;
+  firstName: string;
+  lastName: string;
+  password: string;
 }

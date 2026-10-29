@@ -65,7 +65,7 @@ const PAGE_SIZE = 20;
             <div class="avatar">{{ u.initials }}</div>
             <div class="who">
               <div class="who__name">{{ u.fullName }}</div>
-              <div class="who__mail">{{ u.email }}</div>
+              <div class="who__mail">{{ u.email ?? 'Identifiant : ' + u.username }}</div>
             </div>
             <span class="ef-pill" [class]="pill(u.status)">{{ label(u.status) }}</span>
             <button type="button" class="key" title="Nouveau mot de passe" [attr.aria-label]="'Nouveau mot de passe pour ' + u.fullName" [disabled]="busy() === u.id" (click)="resetPassword(u)">
@@ -86,7 +86,7 @@ const PAGE_SIZE = 20;
       <ef-invite-form [defaultLevel]="levels.current()" (closed)="inviting.set(false)" (invited)="invited($event)" />
     }
     @if (created(); as c) {
-      <ef-credentials-dialog [heading]="c.heading" [name]="c.user.fullName" [email]="c.user.email" [password]="c.temporaryPassword" (closed)="created.set(null)" />
+      <ef-credentials-dialog [heading]="c.heading" [name]="c.user.fullName" [email]="c.user.email ?? 'Identifiant : ' + c.user.username" [password]="c.temporaryPassword" (closed)="created.set(null)" />
     }
   `,
   styles: `

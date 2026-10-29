@@ -40,8 +40,8 @@ function matchesNew(group: AbstractControl): ValidationErrors | null {
             @if (err(profile.controls.fullName); as e) { <span class="ef-f__err">{{ e }}</span> }
           </label>
           <label class="ef-f">
-            <span class="ef-f__label">E-mail</span>
-            <input class="ef-field-input" [value]="user()?.email ?? ''" readonly aria-readonly="true" />
+            <span class="ef-f__label">{{ user()?.email ? 'E-mail' : 'Identifiant' }}</span>
+            <input class="ef-field-input" [value]="user()?.email ?? user()?.username ?? ''" readonly aria-readonly="true" />
             <span class="ef-f__hint">L'adresse de connexion ne se modifie pas ici.</span>
           </label>
           <div class="foot">
