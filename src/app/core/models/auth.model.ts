@@ -52,6 +52,14 @@ export interface ChangePasswordRequest {
   newPassword: string;
 }
 
+/** What activating a book returns: no session, the account waits for the admin. */
+export interface RedeemCouponResponse {
+  fullName: string;
+  /** What the student signs in with once accepted. */
+  username: string;
+  level: Level;
+}
+
 /** Activating a book: the serial comes from the QR code, the code from the scratch-off panel. */
 export interface RedeemCouponRequest {
   serial: string;

@@ -3,7 +3,8 @@ export type Role = 'ADMIN' | 'STUDENT';
 /** A level code, e.g. 'SECOND_AS'. The list lives in the database: see LevelCatalog. */
 export type Level = string;
 
-export type UserStatus = 'ACTIVE' | 'PAUSED' | 'DISABLED';
+/** PENDING: activated a book, waiting for the admin to accept them; cannot sign in yet. */
+export type UserStatus = 'ACTIVE' | 'PAUSED' | 'DISABLED' | 'PENDING';
 
 export interface User {
   id: number;

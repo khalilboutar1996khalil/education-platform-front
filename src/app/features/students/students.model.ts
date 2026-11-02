@@ -36,12 +36,14 @@ export interface ApprovedAccessResponse {
 export const USER_STATUS_LABELS: Record<UserStatus, string> = {
   ACTIVE: 'Actif',
   PAUSED: 'En pause',
+  PENDING: 'En attente',
   DISABLED: 'Désactivé',
 };
 
 export const USER_STATUS_PILL: Record<UserStatus, string> = {
   ACTIVE: 'ef-pill--green',
   PAUSED: 'ef-pill--amber',
+  PENDING: 'ef-pill--amber',
   DISABLED: 'ef-pill--red',
 };
 

@@ -1,7 +1,14 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { EMPTY, Observable, catchError, finalize, firstValueFrom, map, shareReplay, switchMap, tap, throwError } from 'rxjs';
-import { LoginRequest, LoginResponse, RedeemCouponRequest, RegisterRequest, TokenPair } from '../models/auth.model';
+import {
+  LoginRequest,
+  LoginResponse,
+  RedeemCouponRequest,
+  RedeemCouponResponse,
+  RegisterRequest,
+  TokenPair,
+} from '../models/auth.model';
 import { User, signInId } from '../models/user.model';
 import { AuthApi } from './auth.api';
 import { TokenStorage } from './token-storage';
@@ -40,11 +47,9 @@ export class AuthService {
   }
 
   /** Activating a book creates the account and signs it in, as registering does. */
-  activateBook(request: RedeemCouponRequest): Observable<User> {
-    return this.api.redeemCoupon(request).pipe(
-      tap((response) => this.startSession(response)),
-      map((response) => response.user),
-    );
+  /** No session: the account waits for the admin to accept it before anyone can sign in. */
+  activateBook(request: RedeemCouponRequest): Observable<RedeemCouponResponse> {
+    return this.api.redeemCoupon(request);
   }
 
   updateProfile(fullName: string): Observable<User> {

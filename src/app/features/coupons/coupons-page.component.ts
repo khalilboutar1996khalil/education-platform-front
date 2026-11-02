@@ -7,7 +7,7 @@ import { ModalComponent } from '../../shared/ui/modal.component';
 import { CouponBatchFormComponent } from './coupon-batch-form.component';
 import { PageFormat, activationUrl, buildCouponPdf } from './coupon-pdf';
 import { CouponsApi } from './coupons.api';
-import { Coupon, CouponBatch, formatCode } from './coupons.model';
+import { Coupon, CouponBatch, PendingActivation, formatCode } from './coupons.model';
 
 /**
  * Admin: the coupons printed in the books. A batch is one print run for one level; its PDF has a
@@ -30,6 +30,35 @@ import { Coupon, CouponBatch, formatCode } from './coupons.model';
           Nouveau lot
         </button>
       </div>
+
+      <section class="queue" [class.queue--empty]="!requests().length">
+        <div class="queue__head">
+          <div class="queue__title">Activations à valider</div>
+          <span class="ef-pill" [class]="requests().length ? 'ef-pill--amber' : 'ef-pill--green'">
+            {{ requests().length ? requests().length + ' en attente' : 'Aucune en attente' }}
+          </span>
+        </div>
+        @if (requests().length) {
+          <p class="queue__hint">Vérifiez que l'élève a bien acheté le livre avant d'accepter. Refuser libère le code pour le vrai acheteur.</p>
+          <div class="reqs">
+            @for (r of requests(); track r.couponId) {
+              <div class="req">
+                <div class="req__main">
+                  <div class="req__name">{{ r.studentName }}</div>
+                  <div class="req__meta">
+                    Identifiant <strong>{{ r.username }}</strong> · Livre n° {{ r.serial }} ·
+                    {{ r.batchLabel || catalog.label(r.level) }} · {{ r.requestedAt | date: 'd MMM, HH:mm' }}
+                  </div>
+                </div>
+                <button type="button" class="btn btn--ok" [disabled]="deciding() === r.couponId" (click)="decide(r, true)">Accepter</button>
+                <button type="button" class="btn btn--no" [disabled]="deciding() === r.couponId" (click)="decide(r, false)">Refuser</button>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="queue__hint">Quand un élève active un livre, sa demande apparaît ici. Il ne peut pas se connecter tant que vous ne l'avez pas acceptée.</p>
+        }
+      </section>
 
       <div class="how">
         <div class="how__step"><span>1</span>Créez un lot : niveau et nombre d'exemplaires</div>
@@ -66,7 +95,10 @@ import { Coupon, CouponBatch, formatCode } from './coupons.model';
                 </div>
               </div>
               <div class="usage" [attr.aria-label]="b.redeemed + ' activés sur ' + b.quantity">
-                <div class="usage__num"><strong>{{ b.redeemed }}</strong> / {{ b.quantity }} activés</div>
+                <div class="usage__num">
+                  <strong>{{ b.redeemed }}</strong> / {{ b.quantity }} activés
+                  @if (b.pending) { · <span class="usage__wait">{{ b.pending }} en attente</span> }
+                </div>
                 <div class="bar"><div class="bar__fill" [style.width.%]="(b.redeemed / b.quantity) * 100"></div></div>
               </div>
               <button type="button" class="btn" (click)="open(b)">Voir les codes</button>
@@ -105,7 +137,7 @@ import { Coupon, CouponBatch, formatCode } from './coupons.model';
               <div class="codes__row">
                 <span class="serial">{{ c.serial }}</span>
                 <code>{{ code(c.code) }}</code>
-                <span class="ef-pill" [class]="c.redeemed ? 'ef-pill--green' : 'ef-pill--amber'">{{ c.redeemed ? 'Activé' : 'Libre' }}</span>
+                <span class="ef-pill" [class]="c.pending ? 'ef-pill--amber' : c.redeemed ? 'ef-pill--green' : 'ef-pill--neutral'">{{ c.pending ? 'En attente' : c.redeemed ? 'Activé' : 'Libre' }}</span>
                 <span class="who">
                   @if (c.redeemed) {
                     {{ c.redeemedByName }} <small>{{ c.redeemedByUsername }} · {{ c.redeemedAt | date: 'd MMM y' }}</small>
@@ -121,6 +153,22 @@ import { Coupon, CouponBatch, formatCode } from './coupons.model';
     }
   `,
   styles: `
+    .queue { margin-bottom: 16px; padding: 16px; border-radius: 14px; background: var(--ef-surface); border: 1px solid #fde68a; box-shadow: inset 4px 0 0 #f59e0b; }
+    .queue--empty { border-color: var(--ef-border); box-shadow: none; }
+    .queue__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .queue__title { font-family: var(--ef-font-display); font-size: 15px; font-weight: 800; color: var(--ef-text); }
+    .queue__hint { margin: 6px 0 0; font-size: 12.5px; color: var(--ef-text-muted); }
+    .reqs { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    .req { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; background: var(--ef-surface-2); }
+    .req__main { flex: 1; min-width: 0; }
+    .req__name { font-size: 14px; font-weight: 700; color: var(--ef-text); }
+    .req__meta { font-size: 12px; color: var(--ef-text-muted); }
+    .req .btn--ok { color: #15803d; background: #dcfce7; }
+    .req .btn--ok:hover:not(:disabled) { color: #fff; background: #16a34a; }
+    .req .btn--no { color: var(--ef-ink-red, #b91c1c); background: var(--ef-tint-red, #fee2e2); }
+    .req .btn--no:hover:not(:disabled) { color: #fff; background: #dc2626; }
+    .usage__wait { color: #a16207; font-weight: 700; }
+    .ef-pill--neutral { color: var(--ef-text-muted); background: var(--ef-surface-2); }
     .how { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
     .how__step { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: var(--ef-tint-green); color: var(--ef-ink-green); font-size: 13px; font-weight: 600; }
     .how__step span { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--ef-surface); font-weight: 800; }
@@ -154,6 +202,8 @@ import { Coupon, CouponBatch, formatCode } from './coupons.model';
     .who small { display: block; color: var(--ef-text-subtle); }
     @media (max-width: 720px) {
       .how { grid-template-columns: 1fr; }
+      .req { flex-wrap: wrap; }
+      .req__main { flex-basis: 100%; }
       .row { flex-wrap: wrap; }
       .usage { width: 100%; order: 3; }
       .codes__head { display: none; }
@@ -168,6 +218,8 @@ export class CouponsPageComponent implements OnInit {
   private readonly toast = inject(ToastService);
 
   protected readonly batches = signal<CouponBatch[]>([]);
+  protected readonly requests = signal<PendingActivation[]>([]);
+  protected readonly deciding = signal<number | null>(null);
   protected readonly loading = signal(false);
   protected readonly creating = signal(false);
   protected readonly printing = signal<number | null>(null);
@@ -235,7 +287,32 @@ export class CouponsPageComponent implements OnInit {
     });
   }
 
+  protected decide(request: PendingActivation, accept: boolean): void {
+    if (!accept && !confirm(`Refuser la demande de ${request.studentName} ? Son compte sera supprimé et le code du livre n° ${request.serial} redeviendra utilisable.`)) {
+      return;
+    }
+    this.deciding.set(request.couponId);
+    (accept ? this.api.approve(request.couponId) : this.api.reject(request.couponId)).subscribe({
+      next: () => {
+        this.deciding.set(null);
+        this.toast.success(
+          accept ? `${request.studentName} peut maintenant se connecter.` : `Demande de ${request.studentName} refusée.`,
+        );
+        this.load();
+      },
+      error: (e: ApiError) => {
+        this.deciding.set(null);
+        this.toast.error(e.detail);
+        this.load();
+      },
+    });
+  }
+
   private load(): void {
+    this.api.pending().subscribe({
+      next: (list) => this.requests.set(list),
+      error: () => this.requests.set([]),
+    });
     this.loading.set(true);
     this.api.listBatches().subscribe({
       next: (page) => {
