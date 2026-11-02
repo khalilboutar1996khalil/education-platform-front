@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { PageResponse } from '../../core/models/api.model';
 import { Level } from '../../core/models/user.model';
-import { Activity, AdminDashboard, CourseSummary } from './dashboard.model';
+import { Activity, AdminDashboard, CourseSummary, StudentDashboard } from './dashboard.model';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardApi {
@@ -13,6 +13,10 @@ export class DashboardApi {
 
   admin(): Observable<AdminDashboard> {
     return this.http.get<AdminDashboard>(`${this.base}/dashboard/admin`);
+  }
+
+  me(): Observable<StudentDashboard> {
+    return this.http.get<StudentDashboard>(`${this.base}/dashboard/me`);
   }
 
   coursesOf(level: Level): Observable<PageResponse<CourseSummary>> {
