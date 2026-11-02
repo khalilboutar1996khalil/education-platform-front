@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, output, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { EMPTY, catchError, debounceTime, switchMap, tap } from 'rxjs';
+import { EMPTY, catchError, debounceTime, switchMap, tap, Observable } from 'rxjs';
 import { ApiError } from '../../core/models/api.model';
 import { User, UserStatus } from '../../core/models/user.model';
 import { LevelService } from '../../core/services/level.service';
@@ -68,6 +68,10 @@ const PAGE_SIZE = 20;
               <div class="who__mail">{{ u.email ?? 'Identifiant : ' + u.username }}</div>
             </div>
             <span class="ef-pill" [class]="pill(u.status)">{{ label(u.status) }}</span>
+            @if (u.status === 'PENDING') {
+              <button type="button" class="decide decide--ok" [disabled]="busy() === u.id" (click)="decide(u, true)">Accepter</button>
+              <button type="button" class="decide decide--no" [disabled]="busy() === u.id" (click)="decide(u, false)">Refuser</button>
+            } @else {
             <button type="button" class="key" title="Nouveau mot de passe" [attr.aria-label]="'Nouveau mot de passe pour ' + u.fullName" [disabled]="busy() === u.id" (click)="resetPassword(u)">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5" /><path d="M10.7 12.3 21 2M16 7l3 3M18 5l2 2" /></svg>
             </button>
@@ -76,6 +80,7 @@ const PAGE_SIZE = 20;
                 <option [value]="s">{{ label(s) }}</option>
               }
             </select>
+            }
           </div>
         }
       </div>
@@ -92,6 +97,12 @@ const PAGE_SIZE = 20;
   styles: `
     .table { display: flex; flex-direction: column; gap: 8px; transition: opacity 0.2s; }
     .table--busy { opacity: 0.55; }
+    .decide { padding: 7px 13px; border-radius: 9px; font-size: 12px; font-weight: 700; }
+    .decide--ok { color: #15803d; background: #dcfce7; }
+    .decide--ok:hover:not(:disabled) { color: #fff; background: #16a34a; }
+    .decide--no { color: var(--ef-ink-red); background: var(--ef-tint-red); }
+    .decide--no:hover:not(:disabled) { color: #fff; background: #dc2626; }
+    .decide:disabled { opacity: 0.6; }
     .row {
       display: flex;
       align-items: center;
@@ -238,6 +249,27 @@ export class StudentListComponent {
         this.busy.set(null);
         select.value = user.status;
         this.toast.error(e.detail);
+      },
+    });
+  }
+
+  /** A student waiting after activating a book: let them in, or remove the account. */
+  protected decide(user: User, accept: boolean): void {
+    if (!accept && !confirm(`Refuser ${user.fullName} ? Son compte sera supprimé et le code de son livre redeviendra utilisable.`)) {
+      return;
+    }
+    this.busy.set(user.id);
+    const call: Observable<unknown> = accept ? this.api.approvePending(user.id) : this.api.rejectPending(user.id);
+    call.subscribe({
+      next: () => {
+        this.busy.set(null);
+        this.toast.success(accept ? `${user.fullName} peut maintenant se connecter.` : `${user.fullName} a été refusé.`);
+        this.reload.update((n) => n + 1);
+      },
+      error: (e: ApiError) => {
+        this.busy.set(null);
+        this.toast.error(e.detail);
+        this.reload.update((n) => n + 1);
       },
     });
   }
