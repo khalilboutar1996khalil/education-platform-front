@@ -8,6 +8,7 @@ import {
   LoginResponse,
   RefreshRequest,
   RedeemCouponRequest,
+  RedeemCouponResponse,
   RegisterRequest,
   SubmitAccessRequest,
   TokenPair,
@@ -30,8 +31,9 @@ export class AuthApi {
   }
 
   /** Creates the student account for the book's level and returns a session, like register. */
-  redeemCoupon(body: RedeemCouponRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.base}/coupons/redeem`, body);
+  /** Creates the student account for the book's level, waiting for the admin's approval. */
+  redeemCoupon(body: RedeemCouponRequest): Observable<RedeemCouponResponse> {
+    return this.http.post<RedeemCouponResponse>(`${this.base}/coupons/redeem`, body);
   }
 
   refresh(body: RefreshRequest): Observable<TokenPair> {

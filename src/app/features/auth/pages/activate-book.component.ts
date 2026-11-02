@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth/auth.service';
 import { ApiError } from '../../../core/models/api.model';
-import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH } from '../../../core/models/auth.model';
+import { PASSWORD_MAX_LENGTH, PASSWORD_MIN_LENGTH, RedeemCouponResponse } from '../../../core/models/auth.model';
 import { LevelCatalog } from '../../../core/services/level-catalog.service';
-import { User } from '../../../core/models/user.model';
 import { applyServerErrors, errorMessageFor } from '../../../shared/forms/form-errors';
 import { ButtonComponent } from '../../../shared/ui/button.component';
 import { FormFieldComponent } from '../../../shared/ui/form-field.component';
@@ -30,17 +29,21 @@ import { AUTH_PAGE_STYLES } from './auth-done.styles';
               <polyline points="20 6 9 17 4 12" />
             </svg>
           </div>
-          <h3 class="done__title">Bienvenue {{ user.fullName }} !</h3>
+          <h3 class="done__title">Demande envoyée, {{ user.fullName }} !</h3>
           <p class="done__text">
-            Votre compte {{ catalog.label(user.level) }} est prêt. Pour vous reconnecter, utilisez cet
-            <strong>identifiant</strong> et votre mot de passe :
+            Votre professeur va vérifier votre demande pour le niveau
+            <strong>{{ catalog.label(user.level) }}</strong>. Dès qu'elle est acceptée, connectez-vous
+            avec cet <strong>identifiant</strong> et le mot de passe que vous venez de choisir :
           </p>
           <div class="id">
             <code>{{ user.username }}</code>
             <button type="button" (click)="copy(user.username ?? '')">{{ copied() ? 'Copié ✓' : 'Copier' }}</button>
           </div>
           <p class="done__text done__text--small">Notez-le dans votre livre, à côté du code.</p>
-          <button efButton type="button" [block]="true" (click)="enter()">Accéder à mon espace →</button>
+          <div class="wait" role="note">
+            ⏳ En attente de validation : la connexion sera possible après l'accord de votre professeur.
+          </div>
+          <a class="done__link" routerLink="/login">Aller à la connexion</a>
         </div>
       } @else {
         <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
@@ -162,6 +165,16 @@ import { AUTH_PAGE_STYLES } from './auth-done.styles';
         border: 1px solid var(--ef-border);
       }
 
+      .wait {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: #a16207;
+        background: #fef9c3;
+      }
+
       .done__text--small {
         font-size: 12.5px;
       }
@@ -171,7 +184,6 @@ import { AUTH_PAGE_STYLES } from './auth-done.styles';
 export class ActivateBookComponent {
   protected readonly catalog = inject(LevelCatalog);
   private readonly auth = inject(AuthService);
-  private readonly router = inject(Router);
   private readonly fb = inject(NonNullableFormBuilder);
 
   private readonly serialParam = inject(ActivatedRoute).snapshot.queryParamMap.get('serial') ?? '';
@@ -192,7 +204,7 @@ export class ActivateBookComponent {
 
   protected readonly submitting = signal(false);
   protected readonly formError = signal<string | null>(null);
-  protected readonly created = signal<User | null>(null);
+  protected readonly created = signal<RedeemCouponResponse | null>(null);
   protected readonly copied = signal(false);
 
   protected errorFor(control: string): string | null {
@@ -235,9 +247,5 @@ export class ActivateBookComponent {
     } catch {
       // Clipboard refused (insecure context or permission): the text stays selectable
     }
-  }
-
-  protected enter(): void {
-    void this.router.navigate(['/app']);
   }
 }

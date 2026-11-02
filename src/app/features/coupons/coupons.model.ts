@@ -6,8 +6,10 @@ export interface CouponBatch {
   level: Level;
   quantity: number;
   label: string | null;
-  /** How many of the batch's coupons have been used so far. */
+  /** Activations the admin accepted. */
   redeemed: number;
+  /** Activations waiting for the admin's decision. */
+  pending: number;
   createdAt: string;
 }
 
@@ -18,9 +20,23 @@ export interface Coupon {
   /** Under the scratch-off panel, 8 characters without the dash. */
   code: string;
   redeemed: boolean;
+  /** Activated, waiting for the admin to accept the student. */
+  pending: boolean;
   redeemedAt: string | null;
   redeemedByName: string | null;
   redeemedByUsername: string | null;
+}
+
+/** A book activation waiting for the admin: accept to let the student in, refuse to free the code. */
+export interface PendingActivation {
+  couponId: number;
+  serial: string;
+  batchId: number;
+  batchLabel: string | null;
+  level: Level;
+  studentName: string;
+  username: string;
+  requestedAt: string;
 }
 
 export interface CreateCouponBatchRequest {
