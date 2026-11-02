@@ -46,6 +46,16 @@ export class StudentsApi {
     return this.http.post<InviteStudentResponse>(`${this.users}/${id}/reset-password`, {});
   }
 
+  /** A student waiting after activating a book can sign in from now on. */
+  approvePending(id: number): Observable<User> {
+    return this.http.post<User>(`${this.users}/${id}/approve`, {});
+  }
+
+  /** The waiting account is removed; the book's code, if it still exists, works again. */
+  rejectPending(id: number): Observable<void> {
+    return this.http.post<void>(`${this.users}/${id}/reject`, {});
+  }
+
   setStatus(id: number, status: UserStatus): Observable<User> {
     return this.http.patch<User>(`${this.users}/${id}/status`, { status });
   }
