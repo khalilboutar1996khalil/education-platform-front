@@ -1,4 +1,5 @@
-import { Role } from '../core/models/user.model';
+import { Level, Role } from '../core/models/user.model';
+import { canSeeBookVideos } from '../features/videos/videos.catalog';
 
 export interface NavItem {
   path: string;
@@ -90,8 +91,13 @@ const STUDENT_NAV: NavGroup[] = [
   { title: 'Compte', items: [{ path: 'settings', label: 'Paramètres', icon: ICONS.gear }] },
 ];
 
-export function navFor(role: Role | undefined): NavGroup[] {
-  return role === 'ADMIN' ? ADMIN_NAV : STUDENT_NAV;
+export function navFor(role: Role | undefined, level?: Level | null): NavGroup[] {
+  const nav = role === 'ADMIN' ? ADMIN_NAV : STUDENT_NAV;
+  if (canSeeBookVideos(role, level)) {
+    return nav;
+  }
+  // The book videos are for one level only: hide the entry for everyone else.
+  return nav.map((g) => ({ ...g, items: g.items.filter((i) => i.path !== 'videos') }));
 }
 
 /** Header title per route segment, mirroring the mockup's `titles` map. */

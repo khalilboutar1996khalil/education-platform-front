@@ -4,6 +4,8 @@
  * The `code` is printed in the book as a QR code pointing at `/v/<code>`, so a code must never
  * change once a book has been printed: add new videos with new codes instead.
  */
+import type { Level, Role } from '../../core/models/user.model';
+
 export type VideoKind = 'RETENIR' | 'CORRECTION';
 
 export interface BookVideo {
@@ -24,6 +26,13 @@ export interface BookChapter {
 }
 
 export const BOOK_LEVEL_LABEL = '7ᵉ année de base';
+
+/** The level these videos belong to: only its students (and admins) see them. */
+export const BOOK_LEVEL: Level = 'SEVENTH_BASE';
+
+export function canSeeBookVideos(role: Role | null | undefined, level: Level | null | undefined): boolean {
+  return role === 'ADMIN' || level === BOOK_LEVEL;
+}
 
 export const BOOK_CHAPTERS: readonly BookChapter[] = [
   { num: 1, title: "Ordinateur et système d'exploitation" },
