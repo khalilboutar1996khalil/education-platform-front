@@ -119,7 +119,13 @@ const LESSON_ICONS: Record<LessonType, string> = {
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path [attr.d]="icon(ls.type)" /></svg>
                       </div>
                       <div class="ls__main">
-                        <div class="ls__title">{{ ls.title }}</div>
+                        @if (ls.contentUrl && isInternal(ls.contentUrl)) {
+                          <a class="ls__title ls__link" [routerLink]="ls.contentUrl">{{ ls.title }}</a>
+                        } @else if (ls.contentUrl) {
+                          <a class="ls__title ls__link" [href]="ls.contentUrl" target="_blank" rel="noopener">{{ ls.title }}</a>
+                        } @else {
+                          <div class="ls__title">{{ ls.title }}</div>
+                        }
                       </div>
                       <span class="ls__type">{{ typeLabel(ls.type) }}</span>
                       <span class="ls__dur">{{ ls.durationMinutes ? ls.durationMinutes + ' min' : '' }}</span>
@@ -456,6 +462,16 @@ const LESSON_ICONS: Record<LessonType, string> = {
       text-overflow: ellipsis;
     }
 
+    .ls__link {
+      display: block;
+      text-decoration: none;
+    }
+
+    .ls__link:hover {
+      color: var(--ef-ink-green);
+      text-decoration: underline;
+    }
+
     .ls--done .ls__title {
       color: var(--ef-text-muted);
     }
@@ -596,6 +612,11 @@ export class CourseDetailComponent {
         this.loading.set(false);
       },
     });
+  }
+
+  /** Links into this app (e.g. /v/7-1-1, a book video) open in place; others open in a new tab. */
+  protected isInternal(url: string): boolean {
+    return url.startsWith('/') && !url.startsWith('//');
   }
 
   protected toggle(id: number): void {
