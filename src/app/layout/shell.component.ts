@@ -67,6 +67,12 @@ import { SidebarComponent } from './sidebar.component';
         top: 0;
         bottom: 0;
         left: 0;
+        transition: transform 0.2s ease;
+      }
+
+      /* Closed on a phone: hide the rail completely so it does not cover the page (QR-code visits land here). */
+      .shell:not(.shell--drawer-open) .shell__side {
+        transform: translateX(-100%);
       }
 
       .shell--drawer-open .shell__scrim {

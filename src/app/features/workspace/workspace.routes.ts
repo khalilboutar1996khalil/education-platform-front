@@ -21,6 +21,18 @@ const routes: Routes = [
       import('../courses/course-detail.component').then((m) => m.CourseDetailComponent),
   },
   {
+    path: 'videos',
+    title: 'Vidéos · EduFlow',
+    loadComponent: () =>
+      import('../videos/video-library.component').then((m) => m.VideoLibraryComponent),
+  },
+  {
+    path: 'videos/:code',
+    title: 'Vidéo · EduFlow',
+    loadComponent: () =>
+      import('../videos/video-player.component').then((m) => m.VideoPlayerComponent),
+  },
+  {
     path: 'quizzes',
     title: 'Quiz · EduFlow',
     loadComponent: () =>
