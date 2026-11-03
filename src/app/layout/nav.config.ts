@@ -18,21 +18,27 @@ const ICONS = {
   book: 'M4 19.5A2.5 2.5 0 0 1 6.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z',
   quiz: 'M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11',
   file: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8',
-  check: 'M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM3 10h18M9 16l2 2 4-4',
-  folder: 'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z',
-  users: 'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8z',
+  check:
+    'M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM3 10h18M9 16l2 2 4-4',
+  folder:
+    'M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z',
+  users:
+    'M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 3a4 4 0 1 1 0 8 4 4 0 0 1 0-8z',
   chart: 'M18 20V10M12 20V4M6 20v-6',
   bell: 'M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0',
   pen: 'M11 4H4v16h16v-7M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z',
-  ticket: 'M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4zM13 5v14',
+  ticket:
+    'M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4zM13 5v14',
   video: 'M23 7l-7 5 7 5V7zM1 5h15v14H1z',
   layers: 'M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5',
-  gear:
-    'M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6zM19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z',
+  gear: 'M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6zM19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z',
 } as const;
 
 const ADMIN_NAV: NavGroup[] = [
-  { title: "Vue d'ensemble", items: [{ path: 'dashboard', label: 'Tableau de bord', icon: ICONS.grid }] },
+  {
+    title: "Vue d'ensemble",
+    items: [{ path: 'dashboard', label: 'Tableau de bord', icon: ICONS.grid }],
+  },
   {
     title: 'Enseignement',
     items: [
@@ -69,7 +75,10 @@ const ADMIN_NAV: NavGroup[] = [
 ];
 
 const STUDENT_NAV: NavGroup[] = [
-  { title: "Vue d'ensemble", items: [{ path: 'dashboard', label: 'Tableau de bord', icon: ICONS.grid }] },
+  {
+    title: "Vue d'ensemble",
+    items: [{ path: 'dashboard', label: 'Tableau de bord', icon: ICONS.grid }],
+  },
   {
     title: 'Apprentissage',
     items: [
@@ -88,16 +97,26 @@ const STUDENT_NAV: NavGroup[] = [
       { path: 'blog', label: 'Blog', icon: ICONS.pen },
     ],
   },
-  { title: 'Compte', items: [{ path: 'settings', label: 'Paramètres', icon: ICONS.gear }] },
+  {
+    title: 'Compte',
+    items: [{ path: 'settings', label: 'Paramètres', icon: ICONS.gear }],
+  },
 ];
 
-export function navFor(role: Role | undefined, level?: Level | null): NavGroup[] {
+/** `level` is the student's level, or for an admin the level picked in the header. */
+export function navFor(
+  role: Role | undefined,
+  level?: Level | null,
+): NavGroup[] {
   const nav = role === 'ADMIN' ? ADMIN_NAV : STUDENT_NAV;
-  if (canSeeBookVideos(role, level)) {
+  if (canSeeBookVideos(level)) {
     return nav;
   }
   // The book videos are for one level only: hide the entry for everyone else.
-  return nav.map((g) => ({ ...g, items: g.items.filter((i) => i.path !== 'videos') }));
+  return nav.map((g) => ({
+    ...g,
+    items: g.items.filter((i) => i.path !== 'videos'),
+  }));
 }
 
 /** Header title per route segment, mirroring the mockup's `titles` map. */

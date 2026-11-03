@@ -5,6 +5,7 @@ import { ROLE_LABELS } from '../core/models/user.model';
 import { DashboardApi } from '../features/dashboard/dashboard.api';
 import { navFor } from './nav.config';
 import { LevelCatalog } from '../core/services/level-catalog.service';
+import { LevelService } from '../core/services/level.service';
 
 @Component({
   selector: 'ef-sidebar',
@@ -269,6 +270,7 @@ export class SidebarComponent {
   protected readonly auth = inject(AuthService);
 
   private readonly dashboard = inject(DashboardApi);
+  private readonly levels = inject(LevelService);
 
   readonly collapsed = input(false);
   /** Submissions waiting for a mark; shown as a badge on Corrections. */
@@ -285,7 +287,10 @@ export class SidebarComponent {
   readonly navigated = output<void>();
 
   protected readonly user = this.auth.user;
-  protected readonly groups = computed(() => navFor(this.user()?.role, this.user()?.level));
+  // An admin's menu follows the level picked in the header; a student's follows their own level
+  protected readonly groups = computed(() =>
+    navFor(this.user()?.role, this.auth.isAdmin() ? this.levels.current() : this.user()?.level),
+  );
   protected readonly spaceLabel = computed(() =>
     this.auth.isAdmin() ? 'Espace admin' : 'Espace élève',
   );
