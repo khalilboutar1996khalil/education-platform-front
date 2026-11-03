@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { roleGuard } from '../../core/auth/guards';
+import { bookVideosGuard } from '../videos/videos.guard';
 const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
   {
@@ -23,12 +24,14 @@ const routes: Routes = [
   {
     path: 'videos',
     title: 'Vidéos · EduFlow',
+    canActivate: [bookVideosGuard],
     loadComponent: () =>
       import('../videos/video-library.component').then((m) => m.VideoLibraryComponent),
   },
   {
     path: 'videos/:code',
     title: 'Vidéo · EduFlow',
+    canActivate: [bookVideosGuard],
     loadComponent: () =>
       import('../videos/video-player.component').then((m) => m.VideoPlayerComponent),
   },

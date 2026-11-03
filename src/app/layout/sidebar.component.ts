@@ -285,7 +285,7 @@ export class SidebarComponent {
   readonly navigated = output<void>();
 
   protected readonly user = this.auth.user;
-  protected readonly groups = computed(() => navFor(this.user()?.role));
+  protected readonly groups = computed(() => navFor(this.user()?.role, this.user()?.level));
   protected readonly spaceLabel = computed(() =>
     this.auth.isAdmin() ? 'Espace admin' : 'Espace élève',
   );
