@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ApiError } from '../../core/models/api.model';
 import { LevelCatalog } from '../../core/services/level-catalog.service';
@@ -6,6 +6,7 @@ import { applyServerErrors, errorMessageFor } from '../../shared/forms/form-erro
 import { ModalComponent } from '../../shared/ui/modal.component';
 import { CouponsApi } from './coupons.api';
 import { CouponBatch } from './coupons.model';
+import { Level } from '../../core/models/user.model';
 
 /** Generates one coupon per printed copy of a book. */
 @Component({
@@ -52,7 +53,10 @@ import { CouponBatch } from './coupons.model';
     .opt { font-weight: 500; text-transform: none; letter-spacing: 0; color: var(--ef-text-subtle); }
   `,
 })
-export class CouponBatchFormComponent {
+export class CouponBatchFormComponent implements OnInit {
+  /** Pre-selected level: the one picked in the header. */
+  readonly defaultLevel = input<Level>('');
+
   protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(CouponsApi);
   private readonly fb = inject(FormBuilder);
@@ -68,6 +72,12 @@ export class CouponBatchFormComponent {
     quantity: this.fb.control<number | null>(null, [Validators.required, Validators.min(1), Validators.max(2000)]),
     label: this.fb.nonNullable.control(''),
   });
+
+  ngOnInit(): void {
+    if (this.defaultLevel()) {
+      this.form.controls.level.setValue(this.defaultLevel());
+    }
+  }
 
   protected err(name: 'level' | 'quantity'): string | null {
     const ctrl = this.form.controls[name];
