@@ -69,7 +69,7 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
 
         <div class="meta">
           <span>⏱ {{ duration() }}</span>
-          @if (v.kind === 'CORRECTION') {
+          @if (v.voice === 'AR') {
             <span>🇹🇳 Voix en arabe · 🇫🇷 sous-titres en français</span>
           } @else {
             <span>🇫🇷 Voix en français · 🇹🇳 mots clés en arabe</span>

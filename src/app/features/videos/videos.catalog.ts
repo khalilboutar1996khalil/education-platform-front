@@ -18,6 +18,8 @@ export interface BookVideo {
   duration: number;
   /** Short line shown under the title. */
   blurb: string;
+  /** Spoken language: 'AR' = voix en arabe avec sous-titres français (default 'FR'). */
+  voice?: 'FR' | 'AR';
 }
 
 export interface BookChapter {
@@ -60,16 +62,18 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 1,
     title: 'TP 1.1 · Construire mon arborescence',
-    duration: 162,
+    duration: 152,
     blurb: 'Créer des dossiers et des fichiers, copier et déplacer.',
+    voice: 'AR',
   },
   {
     code: '7-1-2',
     kind: 'CORRECTION',
     chapter: 1,
     title: 'TP 1.2 · Renommer, supprimer, restaurer',
-    duration: 109,
+    duration: 102,
     blurb: 'Utiliser la Corbeille sans perdre ses données.',
+    voice: 'AR',
   },
   {
     code: '7-r2',
@@ -84,8 +88,9 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 2,
     title: 'TP 2.1 · Mon collège',
-    duration: 129,
+    duration: 123,
     blurb: 'Saisir, enregistrer, mettre en forme et en page.',
+    voice: 'AR',
   },
   {
     code: '7-2-2',
