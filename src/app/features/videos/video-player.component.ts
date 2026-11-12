@@ -69,7 +69,11 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
 
         <div class="meta">
           <span>⏱ {{ duration() }}</span>
-          <span>🇫🇷 Voix en français · 🇹🇳 mots clés en arabe</span>
+          @if (v.voice === 'AR') {
+            <span>🇹🇳 Voix en arabe · 🇫🇷 sous-titres en français</span>
+          } @else {
+            <span>🇫🇷 Voix en français · 🇹🇳 mots clés en arabe</span>
+          }
           <a class="dl" [href]="src()" [attr.download]="v.code + '.mp4'"
             >Télécharger</a
           >
