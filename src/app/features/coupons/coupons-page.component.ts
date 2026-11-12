@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ApiError } from '../../core/models/api.model';
 import { LevelCatalog } from '../../core/services/level-catalog.service';
+import { LevelService } from '../../core/services/level.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ModalComponent } from '../../shared/ui/modal.component';
 import { CouponBatchFormComponent } from './coupon-batch-form.component';
@@ -22,7 +23,7 @@ import { Coupon, CouponBatch, PendingActivation, formatCode } from './coupons.mo
     <div class="ef-page">
       <div class="ef-page-head">
         <div>
-          <div class="ef-page-title">Coupons des livres</div>
+          <div class="ef-page-title">Coupons des livres · {{ levelLabel() }}</div>
           <div class="ef-page-sub">Un QR code et un code à gratter par exemplaire : l'acheteur active son livre et rejoint son niveau</div>
         </div>
         <button type="button" class="ef-cta" (click)="creating.set(true)">
@@ -31,17 +32,17 @@ import { Coupon, CouponBatch, PendingActivation, formatCode } from './coupons.mo
         </button>
       </div>
 
-      <section class="queue" [class.queue--empty]="!requests().length">
+      <section class="queue" [class.queue--empty]="!levelRequests().length">
         <div class="queue__head">
           <div class="queue__title">Activations à valider</div>
-          <span class="ef-pill" [class]="requests().length ? 'ef-pill--amber' : 'ef-pill--green'">
-            {{ requests().length ? requests().length + ' en attente' : 'Aucune en attente' }}
+          <span class="ef-pill" [class]="levelRequests().length ? 'ef-pill--amber' : 'ef-pill--green'">
+            {{ levelRequests().length ? levelRequests().length + ' en attente' : 'Aucune en attente' }}
           </span>
         </div>
-        @if (requests().length) {
+        @if (levelRequests().length) {
           <p class="queue__hint">Vérifiez que l'élève a bien acheté le livre avant d'accepter. Refuser libère le code pour le vrai acheteur.</p>
           <div class="reqs">
-            @for (r of requests(); track r.couponId) {
+            @for (r of levelRequests(); track r.couponId) {
               <div class="req">
                 <div class="req__main">
                   <div class="req__name">{{ r.studentName }}</div>
@@ -56,6 +57,9 @@ import { Coupon, CouponBatch, PendingActivation, formatCode } from './coupons.mo
             }
           </div>
         } @else {
+          @if (otherRequests()) {
+            <p class="queue__hint"><strong>{{ otherRequests() }} demande(s) en attente dans un autre niveau</strong> : changez de niveau en haut pour les voir.</p>
+          }
           <p class="queue__hint">Quand un élève active un livre, sa demande apparaît ici. Il ne peut pas se connecter tant que vous ne l'avez pas acceptée.</p>
         }
       </section>
@@ -76,17 +80,17 @@ import { Coupon, CouponBatch, PendingActivation, formatCode } from './coupons.mo
         </label>
       </div>
 
-      @if (loading() && !batches().length) {
+      @if (loading() && !levelBatches().length) {
         <div class="ef-empty"><div class="ef-empty__text">Chargement…</div></div>
-      } @else if (!batches().length) {
+      } @else if (!levelBatches().length) {
         <div class="ef-empty">
-          <div class="ef-empty__title">Aucun lot pour l'instant</div>
+          <div class="ef-empty__title">Aucun lot pour {{ levelLabel() }}</div>
           <div class="ef-empty__text">Créez un lot pour générer les QR codes de vos livres.</div>
           <button type="button" class="ef-soft-btn" (click)="creating.set(true)">Créer un lot</button>
         </div>
       } @else {
         <div class="list">
-          @for (b of batches(); track b.id) {
+          @for (b of levelBatches(); track b.id) {
             <div class="row">
               <div class="row__main">
                 <div class="name">{{ b.label || catalog.label(b.level) }}</div>
@@ -115,7 +119,7 @@ import { Coupon, CouponBatch, PendingActivation, formatCode } from './coupons.mo
     </div>
 
     @if (creating()) {
-      <ef-coupon-batch-form (closed)="creating.set(false)" (saved)="created($event)" />
+      <ef-coupon-batch-form [defaultLevel]="levels.current()" (closed)="creating.set(false)" (saved)="created($event)" />
     }
 
     @if (viewing(); as b) {
@@ -214,6 +218,8 @@ import { Coupon, CouponBatch, PendingActivation, formatCode } from './coupons.mo
 })
 export class CouponsPageComponent implements OnInit {
   protected readonly catalog = inject(LevelCatalog);
+  /** The level picked in the header: the page shows that level's batches and activations only. */
+  protected readonly levels = inject(LevelService);
   private readonly api = inject(CouponsApi);
   private readonly toast = inject(ToastService);
 
@@ -233,6 +239,12 @@ export class CouponsPageComponent implements OnInit {
     { value: 'used' as const, label: 'Activés' },
     { value: 'free' as const, label: 'Libres' },
   ];
+  protected readonly levelLabel = computed(() => this.catalog.label(this.levels.current()));
+  protected readonly levelBatches = computed(() => this.batches().filter((b) => b.level === this.levels.current()));
+  protected readonly levelRequests = computed(() => this.requests().filter((r) => r.level === this.levels.current()));
+  /** Pending activations at other levels, so none is forgotten. */
+  protected readonly otherRequests = computed(() => this.requests().length - this.levelRequests().length);
+
   protected readonly shown = computed(() => {
     const f = this.filter();
     return this.coupons().filter((c) => f === 'all' || (f === 'used') === c.redeemed);
