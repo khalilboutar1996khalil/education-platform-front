@@ -165,12 +165,18 @@ export function videoByCode(
   return BOOK_VIDEOS.find((v) => v.code === wanted);
 }
 
+/**
+ * Bumped when the files of a kind are replaced (same code, new content), so browsers that cached
+ * the old video fetch the new one. The QR codes keep pointing at `/v/<code>` and never change.
+ */
+const FILE_VERSION: Record<VideoKind, number> = { RETENIR: 1, CORRECTION: 2 };
+
 export function videoSrc(v: BookVideo): string {
-  return `/videos/7eme/${v.code}.mp4`;
+  return `/videos/7eme/${v.code}.mp4?v=${FILE_VERSION[v.kind]}`;
 }
 
 export function videoPoster(v: BookVideo): string {
-  return `/videos/7eme/${v.code}.jpg`;
+  return `/videos/7eme/${v.code}.jpg?v=${FILE_VERSION[v.kind]}`;
 }
 
 export function formatDuration(seconds: number): string {
