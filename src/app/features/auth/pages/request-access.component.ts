@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthApi } from '../../../core/auth/auth.api';
 import { ApiError } from '../../../core/models/api.model';
 import { PaymentMethod } from '../../../core/models/auth.model';
@@ -76,20 +76,42 @@ import { Offer, formatDinars, formatDuration } from '../../subscriptions/subscri
             />
           </ef-form-field>
 
-          <ef-form-field label="Niveau" [error]="errorFor('level')">
-            <select class="ef-input" formControlName="level">
-              <option value="" disabled>Choisissez votre niveau</option>
-              @for (option of levels(); track option.value) {
-                <option [value]="option.value">{{ option.label }}</option>
+          @if (hasPlans()) {
+            <fieldset class="choose">
+              <legend class="choose__title">Choisissez votre plan</legend>
+              <div class="choose__grid" role="radiogroup" aria-label="Plan">
+                @for (option of levels(); track option.value) {
+                  <label class="choice" [class.choice--on]="form.controls.level.value === option.value">
+                    <input type="radio" formControlName="level" [value]="option.value" />
+                    <span class="choice__name">{{ option.label }}</span>
+                    @if (planFor(option.value); as p) {
+                      <span class="choice__price">{{ price(p.price) }} <small>/ {{ duration(p.durationDays) }}</small></span>
+                    } @else {
+                      <span class="choice__free">Sur validation</span>
+                    }
+                  </label>
+                }
+              </div>
+              @if (errorFor('level')) {
+                <div class="plan__err">Choisissez un plan</div>
               }
-            </select>
-          </ef-form-field>
+            </fieldset>
+          } @else {
+            <ef-form-field label="Niveau" [error]="errorFor('level')">
+              <select class="ef-input" formControlName="level">
+                <option value="" disabled>Choisissez votre niveau</option>
+                @for (option of levels(); track option.value) {
+                  <option [value]="option.value">{{ option.label }}</option>
+                }
+              </select>
+            </ef-form-field>
+          }
 
           @if (plan(); as p) {
             <section class="plan" aria-label="Abonnement">
               <div class="plan__head">
                 <div>
-                  <div class="plan__kicker">Abonnement annuel</div>
+                  <div class="plan__kicker">Votre plan · abonnement annuel</div>
                   <div class="plan__level">{{ p.levelName }}</div>
                 </div>
                 <div class="plan__price">
@@ -231,6 +253,27 @@ import { Offer, formatDinars, formatDuration } from '../../subscriptions/subscri
       color: var(--ef-text-muted);
     }
 
+    .choose { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
+    .choose__title { font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ef-text); margin-bottom: 8px; padding: 0; }
+    .choose__grid { display: grid; gap: 8px; }
+    .choice {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--ef-border);
+      background: var(--ef-surface);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .choice input { accent-color: var(--ef-brand-600); margin: 0; }
+    .choice--on { border-color: var(--ef-brand-600); background: var(--ef-tint-green); }
+    .choice__name { font-size: 13.5px; font-weight: 700; color: var(--ef-text); }
+    .choice__price { font-family: var(--ef-font-display); font-size: 15px; font-weight: 800; color: var(--ef-text); white-space: nowrap; }
+    .choice__price small { font-size: 11.5px; font-weight: 700; color: var(--ef-text-muted); }
+    .choice__free { font-size: 12px; font-weight: 700; color: var(--ef-text-muted); white-space: nowrap; }
     .plan {
       display: grid;
       gap: 12px;
@@ -300,9 +343,20 @@ export class RequestAccessComponent {
   private readonly level = toSignal(this.form.controls.level.valueChanges, { initialValue: '' as Level });
   protected readonly plan = computed(() => this.offer()?.plans.find((p) => p.level === this.level()) ?? null);
   protected readonly payment = computed(() => this.offer()?.payment ?? null);
+  /** With prices set, the level is picked as a plan; otherwise as a plain list. */
+  protected readonly hasPlans = computed(() => (this.offer()?.plans.length ?? 0) > 0);
+
+  protected planFor(level: string) {
+    return this.offer()?.plans.find((p) => p.level === level) ?? null;
+  }
   protected readonly sentWithPlan = signal(false);
 
   constructor() {
+    // « Choisir ce plan » on the home page arrives with ?level=SEVENTH_BASE
+    const wanted = inject(ActivatedRoute).snapshot.queryParamMap.get('level');
+    if (wanted) {
+      this.form.controls.level.setValue(wanted as Level);
+    }
     inject(SubscriptionsApi)
       .offer()
       .pipe(takeUntilDestroyed())

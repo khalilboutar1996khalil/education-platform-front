@@ -1294,3 +1294,92 @@ input, textarea, select {
 .ef-faq .ef-h2 { color: #FFFFFF; }
 .ef-faq .ef-faq-item { border-color: rgba(74,222,128,0.25); }
 .ef-faq .ef-faq-item:hover { box-shadow: 0 12px 28px rgba(0,0,0,0.35); }
+
+/* ═══ TARIFS ═══ */
+.ef-pricing {
+  background: #fff;
+  padding: 76px 24px;
+}
+.ef-pricing-sub {
+  max-width: 620px;
+  margin: 12px auto 0;
+  color: #4b6355;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.ef-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.ef-plan-card {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 26px 24px;
+  border-radius: 20px;
+  border: 1px solid #dcf2e3;
+  background: linear-gradient(180deg, #f6fdf8, #fff);
+  box-shadow: 0 10px 30px -18px rgba(21, 128, 61, 0.35);
+}
+.ef-plan-level {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #15803d;
+}
+.ef-plan-price {
+  font-size: 40px;
+  font-weight: 800;
+  color: #0b2a17;
+  line-height: 1;
+}
+.ef-plan-price span {
+  font-size: 15px;
+  font-weight: 700;
+  color: #5b7565;
+  margin-left: 6px;
+}
+.ef-plan-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  color: #23402d;
+}
+.ef-plan-list li {
+  padding-left: 24px;
+  position: relative;
+}
+.ef-plan-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  font-weight: 800;
+  color: #16a34a;
+}
+.ef-plan-cta {
+  margin-top: auto;
+  text-align: center;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg, #22c55e, #15803d);
+  text-decoration: none;
+}
+.ef-pricing-note {
+  margin-top: 22px;
+  text-align: center;
+  font-size: 14px;
+  color: #4b6355;
+}
+.ef-pricing-note a {
+  color: #15803d;
+  font-weight: 800;
+}

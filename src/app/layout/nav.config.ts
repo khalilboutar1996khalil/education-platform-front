@@ -101,7 +101,10 @@ const STUDENT_NAV: NavGroup[] = [
   },
   {
     title: 'Compte',
-    items: [{ path: 'settings', label: 'Paramètres', icon: ICONS.gear }],
+    items: [
+      { path: 'my-subscription', label: 'Mon abonnement', icon: ICONS.card },
+      { path: 'settings', label: 'Paramètres', icon: ICONS.gear },
+    ],
   },
 ];
 
@@ -135,6 +138,7 @@ export const PAGE_TITLES: Record<string, { admin: string; student: string }> = {
   levels: { admin: 'Niveaux', student: 'Niveaux' },
   coupons: { admin: 'Coupons des livres', student: 'Coupons des livres' },
   subscriptions: { admin: 'Abonnements', student: 'Abonnements' },
+  'my-subscription': { admin: 'Mon abonnement', student: 'Mon abonnement' },
   announcements: { admin: 'Annonces', student: 'Annonces' },
   blog: { admin: 'Blog', student: 'Blog' },
   settings: { admin: 'Paramètres', student: 'Paramètres' },

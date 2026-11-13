@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RevealDirective } from '../shared/directives/reveal.directive';
+import { SubscriptionsApi } from '../features/subscriptions/subscriptions.api';
+import { Plan, formatDinars, formatDuration } from '../features/subscriptions/subscriptions.model';
 
 @Component({
   selector: 'app-landing',
@@ -13,6 +15,23 @@ import { RevealDirective } from '../shared/directives/reveal.directive';
 export class LandingComponent {
   readonly menuOpen = signal(false);
   readonly faqOpen = signal<Record<number, boolean>>({ 0: true });
+
+  /** Plans on sale; the Tarifs section only shows once the admin has priced a level. */
+  readonly plans = signal<Plan[]>([]);
+
+  constructor() {
+    inject(SubscriptionsApi)
+      .offer()
+      .subscribe({ next: (o) => this.plans.set(o.plans), error: () => this.plans.set([]) });
+  }
+
+  price(value: number): string {
+    return formatDinars(value);
+  }
+
+  duration(days: number): string {
+    return formatDuration(days);
+  }
 
   heroModules = [
     {
