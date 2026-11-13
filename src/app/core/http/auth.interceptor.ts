@@ -19,6 +19,10 @@ function isPublic(req: HttpRequest<unknown>): boolean {
   if (PUBLIC_AUTH_PATHS.some((path) => req.url.includes(path))) {
     return true;
   }
+  // The plans shown on the access form are public, like submitting the request itself
+  if (req.method === 'GET' && /\/subscriptions\/offer$/.test(req.url)) {
+    return true;
+  }
   // Submitting an access request is public; listing and approving them are not.
   return req.method === 'POST' && /\/access-requests$/.test(req.url);
 }

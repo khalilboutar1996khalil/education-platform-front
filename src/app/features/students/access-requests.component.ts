@@ -9,7 +9,14 @@ import { SpinnerComponent } from '../../shared/ui/spinner.component';
 import { CredentialsDialogComponent } from './credentials-dialog.component';
 import { RejectDialogComponent } from './reject-dialog.component';
 import { StudentsApi } from './students.api';
-import { AccessRequest, AccessRequestStatus, REQUEST_STATUS_LABELS, REQUEST_STATUS_PILL } from './students.model';
+import {
+  AccessRequest,
+  AccessRequestStatus,
+  PAYMENT_METHOD_LABELS,
+  REQUEST_STATUS_LABELS,
+  REQUEST_STATUS_PILL,
+} from './students.model';
+import { formatDay, formatDinars, formatDuration } from '../subscriptions/subscriptions.model';
 import { LevelCatalog } from '../../core/services/level-catalog.service';
 
 const PAGE_SIZE = 20;
@@ -51,9 +58,27 @@ const PAGE_SIZE = 20;
                 <div class="who__name">{{ r.fullName }}</div>
                 <div class="who__mail">{{ r.email }}</div>
               </div>
+              @if (r.renewal) {
+                <span class="ef-pill ef-pill--blue">Renouvellement</span>
+              }
               <span class="ef-pill ef-pill--green">{{ level(r) }}</span>
               <span class="ef-pill" [class]="pill(r.status)">{{ statusLabel(r.status) }}</span>
             </div>
+            @if (r.price != null) {
+              <div class="pay">
+                <span class="pay__plan">Abonnement {{ duration(r.durationDays) }} · <b>{{ price(r.price) }}</b></span>
+                <span class="pay__sep">·</span>
+                <span>{{ method(r) }} — réf. <b class="pay__ref">{{ r.paymentReference }}</b></span>
+                @if (r.status === 'PENDING') {
+                  <span class="pay__check">Vérifiez ce paiement avant d'accepter</span>
+                }
+              </div>
+            } @else {
+              <div class="free">Demande sans abonnement (aucun plan pour ce niveau)</div>
+            }
+            @if (r.status === 'APPROVED' && r.createdUser?.accessUntil) {
+              <div class="until">Accès jusqu'au {{ day(r.createdUser?.accessUntil) }}</div>
+            }
             @if (r.message) {
               <div class="msg">« {{ r.message }} »</div>
             }
@@ -66,7 +91,7 @@ const PAGE_SIZE = 20;
                 <div class="actions">
                   <button type="button" class="btn btn--no" [disabled]="busy() === r.id" (click)="rejecting.set(r)">Refuser</button>
                   <button type="button" class="ef-cta btn-yes" [disabled]="busy() === r.id" (click)="approve(r)">
-                    {{ busy() === r.id ? 'Création…' : 'Accepter' }}
+                    {{ busy() === r.id ? 'Validation…' : r.renewal ? 'Accepter et prolonger' : 'Accepter' }}
                   </button>
                 </div>
               }
@@ -88,7 +113,7 @@ const PAGE_SIZE = 20;
         heading="Demande acceptée"
         [name]="a.request.fullName"
         [email]="a.request.email"
-        [password]="a.temporaryPassword"
+        [password]="a.password"
         (closed)="approved.set(null)"
       />
     }
@@ -110,6 +135,12 @@ const PAGE_SIZE = 20;
     .btn:disabled { opacity: 0.6; }
     .btn-yes { padding: 9px 18px; }
     .note { margin-top: 10px; font-size: 12px; color: var(--ef-text-muted); }
+    .pay { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 10px; padding: 9px 12px; border-radius: 10px; font-size: 12.5px; color: var(--ef-text); background: var(--ef-tint-green); }
+    .pay__sep { color: var(--ef-text-subtle); }
+    .pay__ref { font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.02em; }
+    .pay__check { flex-basis: 100%; font-size: 11.5px; font-weight: 700; color: var(--ef-ink-amber); }
+    .free { margin-top: 10px; font-size: 12px; color: var(--ef-text-subtle); }
+    .until { margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--ef-ink-green); }
   `,
 })
 export class AccessRequestsComponent {
@@ -129,7 +160,7 @@ export class AccessRequestsComponent {
   protected readonly error = signal<string | null>(null);
   protected readonly busy = signal<number | null>(null);
   protected readonly rejecting = signal<AccessRequest | null>(null);
-  protected readonly approved = signal<{ request: AccessRequest; temporaryPassword: string } | null>(null);
+  protected readonly approved = signal<{ request: AccessRequest; password: string } | null>(null);
 
   constructor() {
     this.load();
@@ -169,6 +200,22 @@ export class AccessRequestsComponent {
     return REQUEST_STATUS_PILL[s];
   }
 
+  protected price(value: number | null): string {
+    return formatDinars(value);
+  }
+
+  protected duration(days: number | null): string {
+    return formatDuration(days);
+  }
+
+  protected day(iso: string | null | undefined): string {
+    return formatDay(iso);
+  }
+
+  protected method(r: AccessRequest): string {
+    return r.paymentMethod ? PAYMENT_METHOD_LABELS[r.paymentMethod] : '';
+  }
+
   protected level(r: AccessRequest): string {
     return this.catalog.short(r.level);
   }
@@ -178,7 +225,13 @@ export class AccessRequestsComponent {
     this.api.approve(r.id).subscribe({
       next: (result) => {
         this.busy.set(null);
-        this.approved.set(result);
+        if (result.temporaryPassword) {
+          this.approved.set({ request: result.request, password: result.temporaryPassword });
+        } else {
+          // A renewal: same account, same password, a later end
+          const until = formatDay(result.request.createdUser?.accessUntil);
+          this.toast.success(`Abonnement de ${result.request.fullName} prolongé jusqu'au ${until}`);
+        }
         this.changed.emit();
         this.load();
       },

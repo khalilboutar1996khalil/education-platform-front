@@ -20,6 +20,8 @@ export interface User {
   status: UserStatus;
   locale: string;
   notifyByEmail: boolean;
+  /** Last day a student may sign in (ISO date); null means no end, e.g. an admin. */
+  accessUntil?: string | null;
 }
 
 /** What the person types to sign in: their email, or the username a book coupon gave them. */

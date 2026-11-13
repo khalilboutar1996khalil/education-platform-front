@@ -111,6 +111,13 @@ const routes: Routes = [
     loadComponent: () => import('../coupons/coupons-page.component').then((m) => m.CouponsPageComponent),
   },
   {
+    path: 'subscriptions',
+    title: 'Abonnements · EduFlow',
+    canActivate: [roleGuard('ADMIN')],
+    loadComponent: () =>
+      import('../subscriptions/subscriptions-page.component').then((m) => m.SubscriptionsPageComponent),
+  },
+  {
     path: 'settings',
     title: 'Paramètres · EduFlow',
     loadComponent: () =>

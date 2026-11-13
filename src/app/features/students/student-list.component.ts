@@ -13,6 +13,15 @@ import { InviteFormComponent } from './invite-form.component';
 import { StudentsApi } from './students.api';
 import { InviteStudentResponse, USER_STATUS_LABELS, USER_STATUS_PILL } from './students.model';
 import { LevelCatalog } from '../../core/services/level-catalog.service';
+import { SubscriptionsApi } from '../subscriptions/subscriptions.api';
+import { formatDay, todayIso } from '../subscriptions/subscriptions.model';
+
+/** ISO date plus some days, computed on the calendar date (no time zone shifts). */
+function addDays(iso: string, days: number): string {
+  const [y, m, d] = iso.split('-').map(Number);
+  const date = new Date(Date.UTC(y, m - 1, d + days));
+  return date.toISOString().slice(0, 10);
+}
 
 const PAGE_SIZE = 20;
 
@@ -54,7 +63,7 @@ const PAGE_SIZE = 20;
           <div class="ef-empty__text">Ajustez votre recherche ou le filtre de statut.</div>
         } @else {
           <div class="ef-empty__title">Aucun élève en {{ levelLabel() }}</div>
-          <div class="ef-empty__text">Invitez un élève, ou laissez-le créer son compte en choisissant ce niveau.</div>
+          <div class="ef-empty__text">Invitez un élève, ou acceptez ses demandes d'accès dans l'onglet Demandes.</div>
           <button type="button" class="ef-soft-btn" (click)="inviting.set(true)">Inviter un élève</button>
         }
       </div>
@@ -67,6 +76,12 @@ const PAGE_SIZE = 20;
               <div class="who__name">{{ u.fullName }}</div>
               <div class="who__mail">{{ u.email ?? 'Identifiant : ' + u.username }}</div>
             </div>
+            @if (u.accessUntil && u.status !== 'PENDING') {
+              <span class="until" [class.until--soon]="soon(u)" [class.until--over]="over(u)" [title]="over(u) ? 'Accès terminé' : 'Dernier jour d’accès'">
+                {{ over(u) ? 'Terminé le' : 'Jusqu’au' }} {{ day(u.accessUntil) }}
+              </span>
+              <button type="button" class="extend" [disabled]="busy() === u.id" (click)="extend(u)" [attr.aria-label]="'Prolonger d’un an l’accès de ' + u.fullName" title="Prolonger d'un an">+1 an</button>
+            }
             <span class="ef-pill" [class]="pill(u.status)">{{ label(u.status) }}</span>
             @if (u.status === 'PENDING') {
               <button type="button" class="decide decide--ok" [disabled]="busy() === u.id" (click)="decide(u, true)">Accepter</button>
@@ -130,6 +145,11 @@ const PAGE_SIZE = 20;
     .who__name { font-size: 13.5px; font-weight: 700; color: var(--ef-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .who__mail { font-size: 11.5px; color: var(--ef-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .act { height: 32px; font-size: 12px; }
+    .until { font-size: 11.5px; font-weight: 700; color: var(--ef-text-muted); white-space: nowrap; }
+    .until--soon { color: var(--ef-ink-amber); }
+    .until--over { color: var(--ef-ink-red); }
+    .extend { height: 28px; padding: 0 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; color: var(--ef-ink-green); background: var(--ef-tint-green); white-space: nowrap; }
+    .extend:disabled { opacity: 0.6; }
     .key { width: 32px; height: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 9px; color: var(--ef-text-muted); background: var(--ef-surface-2); }
     .key:hover:not(:disabled) { color: var(--ef-ink-green); background: var(--ef-tint-green); }
     .key:disabled { opacity: 0.6; }
@@ -142,6 +162,7 @@ const PAGE_SIZE = 20;
 export class StudentListComponent {
   protected readonly catalog = inject(LevelCatalog);
   private readonly api = inject(StudentsApi);
+  private readonly subscriptions = inject(SubscriptionsApi);
   private readonly toast = inject(ToastService);
   protected readonly levels = inject(LevelService);
 
@@ -270,6 +291,43 @@ export class StudentListComponent {
         this.busy.set(null);
         this.toast.error(e.detail);
         this.reload.update((n) => n + 1);
+      },
+    });
+  }
+
+  protected day(iso: string | null | undefined): string {
+    return formatDay(iso);
+  }
+
+  protected over(user: User): boolean {
+    return !!user.accessUntil && user.accessUntil < todayIso();
+  }
+
+  /** Ends within a month: time to remind them to renew. */
+  protected soon(user: User): boolean {
+    if (!user.accessUntil || this.over(user)) {
+      return false;
+    }
+    return user.accessUntil <= addDays(todayIso(), 30);
+  }
+
+  /** One more year, counted from the end (or from today if it is already over). */
+  protected extend(user: User): void {
+    const from = this.over(user) || !user.accessUntil ? todayIso() : user.accessUntil;
+    const until = addDays(from, 365);
+    if (!confirm(`Prolonger l'accès de ${user.fullName} jusqu'au ${formatDay(until)} ?`)) {
+      return;
+    }
+    this.busy.set(user.id);
+    this.subscriptions.setAccessUntil(user.id, until).subscribe({
+      next: (updated) => {
+        this.busy.set(null);
+        this.students.update((list) => list.map((u) => (u.id === updated.id ? updated : u)));
+        this.toast.success(`${updated.fullName} : accès jusqu'au ${formatDay(updated.accessUntil)}`);
+      },
+      error: (e: ApiError) => {
+        this.busy.set(null);
+        this.toast.error(e.detail);
       },
     });
   }

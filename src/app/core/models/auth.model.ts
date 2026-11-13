@@ -40,7 +40,13 @@ export interface SubmitAccessRequest {
   email: string;
   level: Level;
   message?: string;
+  /** Required when the level has a yearly plan. */
+  paymentMethod?: PaymentMethod;
+  paymentReference?: string;
 }
+
+/** How a student says they paid; the admin checks it before accepting. */
+export type PaymentMethod = 'D17' | 'VIREMENT';
 
 export interface UpdateProfileRequest {
   fullName: string;
