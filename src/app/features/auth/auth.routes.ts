@@ -9,10 +9,10 @@ const routes: Routes = [
     loadComponent: () => import('./pages/login.component').then((m) => m.LoginComponent),
   },
   {
+    // Every student is accepted by the professor, so signing up is a request (with its plan)
     path: 'register',
-    canActivate: [guestGuard],
-    title: 'Créer mon compte · EduFlow',
-    loadComponent: () => import('./pages/register.component').then((m) => m.RegisterComponent),
+    pathMatch: 'full',
+    redirectTo: 'request-access',
   },
   {
     path: 'request-access',

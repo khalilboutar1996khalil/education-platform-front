@@ -1,3 +1,4 @@
+import { PaymentMethod } from '../../core/models/auth.model';
 import { Level, User, UserStatus } from '../../core/models/user.model';
 
 export type AccessRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
@@ -14,6 +15,13 @@ export interface AccessRequest {
   createdUser: User | null;
   decisionNote: string | null;
   submittedAt: string;
+  /** What the plan cost when asked (DT); null for a level without a plan. */
+  price: number | null;
+  durationDays: number | null;
+  paymentMethod: PaymentMethod | null;
+  paymentReference: string | null;
+  /** An existing student extending their access: accepting creates no new account. */
+  renewal: boolean;
 }
 
 export interface InviteStudentRequest {
@@ -30,8 +38,14 @@ export interface InviteStudentResponse {
 
 export interface ApprovedAccessResponse {
   request: AccessRequest;
-  temporaryPassword: string;
+  /** null for a renewal: the student keeps their password. */
+  temporaryPassword: string | null;
 }
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  D17: 'D17',
+  VIREMENT: 'Virement bancaire',
+};
 
 export const USER_STATUS_LABELS: Record<UserStatus, string> = {
   ACTIVE: 'Actif',

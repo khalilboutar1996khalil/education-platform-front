@@ -72,7 +72,7 @@ const DEMO_PASSWORD = 'Passw0rd-Demo';
       }
 
       <p class="signup">
-        Pas de compte ? <a routerLink="/register">Créer mon compte</a>
+        Pas de compte ? <a routerLink="/request-access">S'inscrire</a>
       </p>
       <p class="signup signup--book">
         Vous avez un livre EduFlow ? <a routerLink="/activer">Activer mon livre</a>

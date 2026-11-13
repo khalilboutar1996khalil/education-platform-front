@@ -30,6 +30,7 @@ const ICONS = {
   ticket:
     'M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4zM13 5v14',
   video: 'M23 7l-7 5 7 5V7zM1 5h15v14H1z',
+  card: 'M1 4h22v16H1zM1 10h22M5 15h4',
   layers: 'M12 2 2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5',
   gear: 'M12 15a3 3 0 1 1 0-6 3 3 0 0 1 0 6zM19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z',
 } as const;
@@ -56,6 +57,7 @@ const ADMIN_NAV: NavGroup[] = [
       { path: 'students', label: 'Élèves', icon: ICONS.users },
       { path: 'grades', label: 'Notes', icon: ICONS.chart },
       { path: 'coupons', label: 'Coupons livres', icon: ICONS.ticket },
+      { path: 'subscriptions', label: 'Abonnements', icon: ICONS.card },
     ],
   },
   {
@@ -132,6 +134,7 @@ export const PAGE_TITLES: Record<string, { admin: string; student: string }> = {
   grades: { admin: 'Notes', student: 'Mes notes' },
   levels: { admin: 'Niveaux', student: 'Niveaux' },
   coupons: { admin: 'Coupons des livres', student: 'Coupons des livres' },
+  subscriptions: { admin: 'Abonnements', student: 'Abonnements' },
   announcements: { admin: 'Annonces', student: 'Annonces' },
   blog: { admin: 'Blog', student: 'Blog' },
   settings: { admin: 'Paramètres', student: 'Paramètres' },
