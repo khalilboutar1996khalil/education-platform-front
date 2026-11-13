@@ -13,6 +13,9 @@
         <a href="#services" class="ef-nav-link">Formations</a>
         <a href="#why" class="ef-nav-link">Pourquoi nous</a>
         <a href="#how" class="ef-nav-link">Fonctionnement</a>
+        @if (plans().length) {
+          <a href="#tarifs" class="ef-nav-link">Tarifs</a>
+        }
         <a href="#faq" class="ef-nav-link">FAQ</a>
         <a href="#contact" class="ef-nav-link">Contact</a>
       </nav>
@@ -29,6 +32,9 @@
         <a href="#services" (click)="closeMenu()">Formations</a>
         <a href="#why" (click)="closeMenu()">Pourquoi nous</a>
         <a href="#how" (click)="closeMenu()">Fonctionnement</a>
+        @if (plans().length) {
+          <a href="#tarifs" (click)="closeMenu()">Tarifs</a>
+        }
         <a href="#faq" (click)="closeMenu()">FAQ</a>
         <a href="#contact" (click)="closeMenu()">Contact</a>
         <a routerLink="/login" (click)="closeMenu()">Se connecter</a>
@@ -162,6 +168,41 @@
       </div>
     </div>
   </section>
+
+  <!-- ═══ TARIFS ═══ -->
+  @if (plans().length) {
+    <section id="tarifs" class="ef-pricing">
+      <div class="ef-how-wrap">
+        <div class="ef-section-head">
+          <span class="ef-eyebrow">Tarifs</span>
+          <h2 class="ef-h2">Un abonnement par an, selon votre niveau</h2>
+          <p class="ef-pricing-sub">
+            Choisissez votre niveau, payez par D17 ou virement, et votre professeur active votre accès
+            dès qu'il a vérifié le paiement.
+          </p>
+        </div>
+        <div class="ef-pricing-grid">
+          @for (p of plans(); track p.level) {
+            <article class="ef-plan-card">
+              <div class="ef-plan-level">{{ p.levelName }}</div>
+              <div class="ef-plan-price">{{ price(p.price) }}<span>/ {{ duration(p.durationDays) }}</span></div>
+              <ul class="ef-plan-list">
+                <li>Tous les modules de votre niveau</li>
+                <li>Vidéos, quiz et TP corrigés</li>
+                <li>Suivi de vos notes et de votre progression</li>
+                <li>Accès {{ duration(p.durationDays) }} dès la validation</li>
+              </ul>
+              <a class="ef-plan-cta" routerLink="/request-access" [queryParams]="{ level: p.level }">Choisir ce plan →</a>
+            </article>
+          }
+        </div>
+        <p class="ef-pricing-note">
+          Vous avez le cahier parascolaire ? Son coupon donne accès sans abonnement :
+          <a routerLink="/activer">activer mon livre</a>.
+        </p>
+      </div>
+    </section>
+  }
 
   <!-- ═══ TÉMOIGNAGES ═══ -->
   <section class="ef-testimonials">
