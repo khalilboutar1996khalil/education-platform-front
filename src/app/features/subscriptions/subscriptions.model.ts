@@ -64,3 +64,17 @@ export function formatDay(iso: string | null | undefined): string {
 export function todayIso(): string {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Tunis' }).format(new Date());
 }
+
+const RECEIPT_TYPES = ['image/jpeg', 'image/png', 'application/pdf'];
+const MAX_RECEIPT_BYTES = 5 * 1024 * 1024;
+
+/** Why a file cannot be sent as a receipt, or null when it can. */
+export function receiptProblem(file: File): string | null {
+  if (!RECEIPT_TYPES.includes(file.type)) {
+    return 'Le reçu doit être une photo (JPG, PNG) ou un PDF.';
+  }
+  if (file.size > MAX_RECEIPT_BYTES) {
+    return 'Le reçu ne peut pas dépasser 5 Mo.';
+  }
+  return null;
+}

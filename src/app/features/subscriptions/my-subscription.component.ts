@@ -8,7 +8,7 @@ import { Level } from '../../core/models/user.model';
 import { LevelCatalog } from '../../core/services/level-catalog.service';
 import { SpinnerComponent } from '../../shared/ui/spinner.component';
 import { SubscriptionsApi } from './subscriptions.api';
-import { Offer, formatDay, formatDinars, formatDuration, todayIso } from './subscriptions.model';
+import { Offer, formatDay, formatDinars, formatDuration, receiptProblem, todayIso } from './subscriptions.model';
 
 /** Whole days from one ISO date to another. */
 function daysBetween(from: string, to: string): number {
@@ -114,8 +114,21 @@ function daysBetween(from: string, to: string): number {
                   <div class="pay__more">{{ offer()?.payment?.instructions }}</div>
                 }
               </div>
+              <div class="receipt">
+                <div class="label">Reçu du paiement</div>
+                <label class="receipt__pick">
+                  <input type="file" accept="image/jpeg,image/png,application/pdf" (change)="pickReceipt($event)" />
+                  <span class="receipt__btn">{{ receipt() ? 'Changer le fichier' : 'Joindre la photo ou le PDF du reçu' }}</span>
+                  @if (receipt(); as f) {
+                    <span class="receipt__name">{{ f.name }}</span>
+                  }
+                </label>
+                @if (receiptError()) {
+                  <div class="err">{{ receiptError() }}</div>
+                }
+              </div>
               <label class="field">
-                <span>Référence du paiement</span>
+                <span>{{ receipt() ? 'Référence du paiement (facultatif)' : 'Référence du paiement (si vous n’avez pas de reçu)' }}</span>
                 <input
                   class="ef-input"
                   maxlength="100"
@@ -165,6 +178,12 @@ function daysBetween(from: string, to: string): number {
     .method--on { border-color: var(--ef-brand-600); background: var(--ef-tint-green); }
     .pay { padding: 10px 12px; border-radius: 10px; background: var(--ef-surface-2); font-size: 12.5px; line-height: 1.6; color: var(--ef-text); }
     .pay__more { margin-top: 6px; color: var(--ef-text-muted); white-space: pre-line; }
+    .receipt { display: grid; gap: 6px; }
+    .receipt__pick { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; }
+    .receipt__pick input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .receipt__btn { padding: 9px 12px; border-radius: 10px; border: 1px dashed var(--ef-brand-600); font-size: 12.5px; font-weight: 700; color: var(--ef-ink-green); background: var(--ef-tint-green); }
+    .receipt__pick input:focus-visible + .receipt__btn { outline: 2px solid var(--ef-brand-600); outline-offset: 2px; }
+    .receipt__name { font-size: 12px; color: var(--ef-text-muted); word-break: break-all; }
     .field { display: grid; gap: 5px; font-size: 12px; font-weight: 700; color: var(--ef-text-muted); }
     .foot { display: flex; justify-content: flex-end; }
     .ef-cta:disabled { opacity: 0.5; }
@@ -206,7 +225,19 @@ export class MySubscriptionComponent {
   protected readonly error = signal<string | null>(null);
 
   protected readonly chosen = computed(() => this.offer()?.plans.find((p) => p.level === this.level()) ?? null);
-  protected readonly canSend = computed(() => !!this.chosen() && !!this.method() && this.reference().trim().length > 0);
+  protected readonly receipt = signal<File | null>(null);
+  protected readonly receiptError = signal<string | null>(null);
+  /** Proof of payment: the receipt, or failing that the typed reference. */
+  protected readonly canSend = computed(
+    () => !!this.chosen() && !!this.method() && (!!this.receipt() || this.reference().trim().length > 0),
+  );
+
+  protected pickReceipt(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    const problem = file ? receiptProblem(file) : null;
+    this.receiptError.set(problem);
+    this.receipt.set(problem ? null : file);
+  }
 
   constructor() {
     inject(SubscriptionsApi)
@@ -251,8 +282,8 @@ export class MySubscriptionComponent {
         level: this.level(),
         message: 'Renouvellement depuis « Mon abonnement »',
         paymentMethod: method,
-        paymentReference: this.reference().trim(),
-      })
+        ...(this.reference().trim() ? { paymentReference: this.reference().trim() } : {}),
+      }, this.receipt())
       .subscribe({
         next: () => {
           this.sending.set(false);

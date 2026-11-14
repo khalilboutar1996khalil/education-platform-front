@@ -20,6 +20,8 @@ export interface AccessRequest {
   durationDays: number | null;
   paymentMethod: PaymentMethod | null;
   paymentReference: string | null;
+  /** Filename of the attached receipt; null when the student sent none. */
+  receiptName: string | null;
   /** An existing student extending their access: accepting creates no new account. */
   renewal: boolean;
 }
