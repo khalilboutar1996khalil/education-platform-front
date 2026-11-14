@@ -12,7 +12,7 @@ import { FormFieldComponent } from '../../../shared/ui/form-field.component';
 import { AuthLayoutComponent } from '../components/auth-layout.component';
 import { LevelCatalog } from '../../../core/services/level-catalog.service';
 import { SubscriptionsApi } from '../../subscriptions/subscriptions.api';
-import { Offer, formatDinars, formatDuration } from '../../subscriptions/subscriptions.model';
+import { Offer, formatDinars, formatDuration, receiptProblem } from '../../subscriptions/subscriptions.model';
 
 @Component({
   selector: 'ef-request-access',
@@ -160,9 +160,23 @@ import { Offer, formatDinars, formatDuration } from '../../subscriptions/subscri
                   }
                 </div>
 
+                <div class="receipt">
+                  <div class="plan__label">Reçu du paiement</div>
+                  <label class="receipt__pick">
+                    <input type="file" accept="image/jpeg,image/png,application/pdf" (change)="pickReceipt($event)" />
+                    <span class="receipt__btn">{{ receipt() ? 'Changer le fichier' : 'Joindre la photo ou le PDF du reçu' }}</span>
+                    @if (receipt(); as f) {
+                      <span class="receipt__name">{{ f.name }}</span>
+                    }
+                  </label>
+                  @if (receiptError()) {
+                    <div class="plan__err">{{ receiptError() }}</div>
+                  }
+                </div>
+
                 <ef-form-field
-                  label="Référence du paiement"
-                  [hint]="m === 'D17' ? 'Le numéro de la transaction D17' : 'La référence du virement'"
+                  [label]="receipt() ? 'Référence du paiement (facultatif)' : 'Référence du paiement'"
+                  [hint]="receipt() ? 'Le reçu suffit ; la référence aide votre professeur' : m === 'D17' ? 'Sans reçu : le numéro de la transaction D17' : 'Sans reçu : la référence du virement'"
                   [error]="errorFor('paymentReference')"
                 >
                   <input
@@ -253,6 +267,12 @@ import { Offer, formatDinars, formatDuration } from '../../subscriptions/subscri
       color: var(--ef-text-muted);
     }
 
+    .receipt { display: grid; gap: 6px; }
+    .receipt__pick { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; cursor: pointer; }
+    .receipt__pick input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .receipt__btn { padding: 9px 12px; border-radius: 10px; border: 1px dashed var(--ef-brand-600); font-size: 12.5px; font-weight: 700; color: var(--ef-ink-green); background: var(--ef-tint-green); }
+    .receipt__pick input:focus-visible + .receipt__btn { outline: 2px solid var(--ef-brand-600); outline-offset: 2px; }
+    .receipt__name { font-size: 12px; color: var(--ef-text-muted); word-break: break-all; }
     .choose { border: 0; padding: 0; margin: 0; display: grid; gap: 8px; }
     .choose__title { font-size: 11.5px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ef-text); margin-bottom: 8px; padding: 0; }
     .choose__grid { display: grid; gap: 8px; }
@@ -350,6 +370,15 @@ export class RequestAccessComponent {
     return this.offer()?.plans.find((p) => p.level === level) ?? null;
   }
   protected readonly sentWithPlan = signal(false);
+  protected readonly receipt = signal<File | null>(null);
+  protected readonly receiptError = signal<string | null>(null);
+
+  protected pickReceipt(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    const problem = file ? receiptProblem(file) : null;
+    this.receiptError.set(problem);
+    this.receipt.set(problem ? null : file);
+  }
 
   constructor() {
     // « Choisir ce plan » on the home page arrives with ?level=SEVENTH_BASE
@@ -387,7 +416,9 @@ export class RequestAccessComponent {
     const paid = !!this.plan();
     const { paymentMethod: methodControl, paymentReference: referenceControl } = this.form.controls;
     methodControl.setValidators(paid ? [Validators.required] : []);
-    referenceControl.setValidators(paid ? [Validators.required, Validators.maxLength(100)] : [Validators.maxLength(100)]);
+    // Proof of payment: the receipt, or failing that the typed reference
+    const needsReference = paid && !this.receipt();
+    referenceControl.setValidators(needsReference ? [Validators.required, Validators.maxLength(100)] : [Validators.maxLength(100)]);
     methodControl.updateValueAndValidity();
     referenceControl.updateValueAndValidity();
 
@@ -407,8 +438,10 @@ export class RequestAccessComponent {
         email,
         level,
         ...(message.trim() ? { message: message.trim() } : {}),
-        ...(paid && paymentMethod ? { paymentMethod, paymentReference: paymentReference.trim() } : {}),
-      })
+        ...(paid && paymentMethod
+          ? { paymentMethod, ...(paymentReference.trim() ? { paymentReference: paymentReference.trim() } : {}) }
+          : {}),
+      }, paid ? this.receipt() : null)
       .subscribe({
         // The API answers 202 with an empty body whether or not the address is already known,
         // so the confirmation deliberately reveals nothing either way.

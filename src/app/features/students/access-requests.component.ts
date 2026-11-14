@@ -68,7 +68,19 @@ const PAGE_SIZE = 20;
               <div class="pay">
                 <span class="pay__plan">Abonnement {{ duration(r.durationDays) }} · <b>{{ price(r.price) }}</b></span>
                 <span class="pay__sep">·</span>
-                <span>{{ method(r) }} — réf. <b class="pay__ref">{{ r.paymentReference }}</b></span>
+                <span>
+                  {{ method(r) }}
+                  @if (r.paymentReference) {
+                    — réf. <b class="pay__ref">{{ r.paymentReference }}</b>
+                  }
+                </span>
+                @if (r.receiptName) {
+                  <button type="button" class="pay__receipt" [disabled]="opening() === r.id" (click)="openReceipt(r)">
+                    {{ opening() === r.id ? 'Ouverture…' : '📎 Voir le reçu' }}
+                  </button>
+                } @else {
+                  <span class="pay__none">pas de reçu joint</span>
+                }
                 @if (r.status === 'PENDING') {
                   <span class="pay__check">Vérifiez ce paiement avant d'accepter</span>
                 }
@@ -138,6 +150,9 @@ const PAGE_SIZE = 20;
     .pay { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-top: 10px; padding: 9px 12px; border-radius: 10px; font-size: 12.5px; color: var(--ef-text); background: var(--ef-tint-green); }
     .pay__sep { color: var(--ef-text-subtle); }
     .pay__ref { font-family: ui-monospace, Menlo, monospace; letter-spacing: 0.02em; }
+    .pay__receipt { padding: 5px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; color: #fff; background: var(--ef-brand-600); }
+    .pay__receipt:disabled { opacity: 0.6; }
+    .pay__none { font-size: 11.5px; color: var(--ef-text-subtle); }
     .pay__check { flex-basis: 100%; font-size: 11.5px; font-weight: 700; color: var(--ef-ink-amber); }
     .free { margin-top: 10px; font-size: 12px; color: var(--ef-text-subtle); }
     .until { margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--ef-ink-green); }
@@ -198,6 +213,35 @@ export class AccessRequestsComponent {
 
   protected pill(s: AccessRequestStatus): string {
     return REQUEST_STATUS_PILL[s];
+  }
+
+  protected readonly opening = signal<number | null>(null);
+
+  /** Fetched with the admin's session, then shown in a new tab. */
+  protected openReceipt(r: AccessRequest): void {
+    // Opened now, during the click, so the browser does not block it as a pop-up
+    const tab = window.open('', '_blank');
+    this.opening.set(r.id);
+    this.api.receipt(r.id).subscribe({
+      next: (blob) => {
+        this.opening.set(null);
+        const url = URL.createObjectURL(blob);
+        if (tab) {
+          tab.location.href = url;
+        } else {
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = r.receiptName ?? 'recu';
+          link.click();
+        }
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
+      },
+      error: (e: ApiError) => {
+        this.opening.set(null);
+        tab?.close();
+        this.toast.error(e.detail ?? 'Impossible d’ouvrir le reçu');
+      },
+    });
   }
 
   protected price(value: number | null): string {

@@ -26,6 +26,11 @@ export class StudentsApi {
   private readonly users = `${environment.apiBaseUrl}/users`;
   private readonly requests = `${environment.apiBaseUrl}/access-requests`;
 
+  /** The receipt a student attached to their request (a photo or a PDF). */
+  receipt(requestId: number): Observable<Blob> {
+    return this.http.get(`${this.requests}/${requestId}/receipt`, { responseType: 'blob' });
+  }
+
   students(q: StudentQuery): Observable<PageResponse<User>> {
     let params = new HttpParams().set('role', 'STUDENT').set('level', q.level).set('page', q.page).set('size', q.size);
     if (q.status) {

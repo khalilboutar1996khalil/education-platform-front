@@ -65,7 +65,14 @@ export class AuthApi {
     return this.http.post<void>(`${this.base}/auth/reset-password`, body);
   }
 
-  submitAccessRequest(body: SubmitAccessRequest): Observable<void> {
-    return this.http.post<void>(`${this.base}/access-requests`, body);
+  /** With a receipt (photo or PDF of the payment), the request goes as multipart. */
+  submitAccessRequest(body: SubmitAccessRequest, receipt?: File | null): Observable<void> {
+    if (!receipt) {
+      return this.http.post<void>(`${this.base}/access-requests`, body);
+    }
+    const form = new FormData();
+    form.append('request', new Blob([JSON.stringify(body)], { type: 'application/json' }));
+    form.append('receipt', receipt, receipt.name);
+    return this.http.post<void>(`${this.base}/access-requests`, form);
   }
 }
