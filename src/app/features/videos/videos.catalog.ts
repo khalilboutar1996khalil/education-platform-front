@@ -58,7 +58,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 1,
     title: "À retenir · L'ordinateur et moi",
-    duration: 171,
+    duration: 106,
     blurb: "L'essentiel du chapitre 1, sous-titré en arabe.",
   },
   {
@@ -66,7 +66,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 1,
     title: 'TP 1.1 · Construire mon arborescence',
-    duration: 152,
+    duration: 116,
     blurb: 'Créer des dossiers et des fichiers, copier et déplacer.',
   },
   {
@@ -74,7 +74,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 1,
     title: 'TP 1.2 · Renommer, supprimer, restaurer',
-    duration: 102,
+    duration: 80,
     blurb: 'Utiliser la Corbeille sans perdre ses données.',
   },
   {
@@ -82,7 +82,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 2,
     title: "À retenir · J'écris avec l'ordinateur",
-    duration: 175,
+    duration: 116,
     blurb: "L'essentiel du traitement de textes, sous-titré en arabe.",
   },
   {
@@ -90,7 +90,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 2,
     title: 'TP 2.1 · Mon collège',
-    duration: 123,
+    duration: 98,
     blurb: 'Saisir, enregistrer, mettre en forme et en page.',
   },
   {
@@ -98,7 +98,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 2,
     title: "TP 2.2 · Ma carte d'identité scolaire",
-    duration: 109,
+    duration: 90,
     blurb: 'Insérer un tableau, une image, une bordure, imprimer.',
   },
   {
@@ -106,7 +106,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 3,
     title: "À retenir · Je dessine avec l'ordinateur",
-    duration: 179,
+    duration: 120,
     blurb: "L'essentiel du traitement d'images, sous-titré en arabe.",
   },
   {
@@ -114,7 +114,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 3,
     title: 'TP 3.1 · Le drapeau tunisien',
-    duration: 123,
+    duration: 102,
     blurb: 'Formes, remplissage et enregistrement en PNG.',
   },
   {
@@ -122,7 +122,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 3,
     title: "TP 3.2 · Trois versions d'une photo",
-    duration: 102,
+    duration: 86,
     blurb: 'Filtre, symétrie, taille et texte, sans toucher à l’original.',
   },
   {
@@ -130,7 +130,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 4,
     title: 'À retenir · Je surfe sur le Web',
-    duration: 190,
+    duration: 129,
     blurb: "L'essentiel d'Internet et du Web, sous-titré en arabe.",
   },
   {
@@ -138,7 +138,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 4,
     title: 'TP 4.1 · Découvrir mon navigateur',
-    duration: 103,
+    duration: 85,
     blurb: "Barre d'adresse, Précédent, Actualiser, liens.",
   },
   {
@@ -146,7 +146,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 4,
     title: 'TP 4.2 · Mini-exposé : une ville tunisienne',
-    duration: 106,
+    duration: 90,
     blurb: 'Chercher, vérifier, récupérer et citer ses sources.',
   },
   {
@@ -154,7 +154,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 5,
     title: 'À retenir · Mon grand projet',
-    duration: 150,
+    duration: 103,
     blurb: 'Les étapes du projet de fin d’année.',
   },
 ];
