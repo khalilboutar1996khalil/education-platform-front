@@ -51,7 +51,7 @@ const VIDEOS_7: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 1,
     title: "À retenir · L'ordinateur et moi",
-    duration: 106,
+    duration: 108,
     blurb: "L'essentiel du chapitre 1, sous-titré en arabe.",
   },
   {
@@ -75,7 +75,7 @@ const VIDEOS_7: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 2,
     title: "À retenir · J'écris avec l'ordinateur",
-    duration: 116,
+    duration: 122,
     blurb: "L'essentiel du traitement de textes, sous-titré en arabe.",
   },
   {
@@ -99,7 +99,7 @@ const VIDEOS_7: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 3,
     title: "À retenir · Je dessine avec l'ordinateur",
-    duration: 120,
+    duration: 127,
     blurb: "L'essentiel du traitement d'images, sous-titré en arabe.",
   },
   {
@@ -123,7 +123,7 @@ const VIDEOS_7: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 4,
     title: 'À retenir · Je surfe sur le Web',
-    duration: 129,
+    duration: 137,
     blurb: "L'essentiel d'Internet et du Web, sous-titré en arabe.",
   },
   {
@@ -147,7 +147,7 @@ const VIDEOS_7: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 5,
     title: 'À retenir · Mon grand projet',
-    duration: 103,
+    duration: 107,
     blurb: 'Les étapes du projet de fin d’année.',
   },
 ];
@@ -180,7 +180,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 1,
     title: 'À retenir · Je protège mon PC',
-    duration: 95,
+    duration: 99,
     blurb: 'Logiciels malveillants, hameçonnage, bons réflexes.',
   },
   {
@@ -188,7 +188,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 1,
     title: 'TP 1.1 · Je sécurise mon ordinateur',
-    duration: 66,
+    duration: 69,
     blurb: 'Antivirus, pare-feu et mises à jour.',
   },
   {
@@ -204,7 +204,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 2,
     title: 'À retenir · Je communique en ligne',
-    duration: 93,
+    duration: 100,
     blurb: 'E-mail, Cc et Cci, nétiquette, e-réputation.',
   },
   {
@@ -212,7 +212,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 2,
     title: 'TP 2.1 · Un e-mail avec pièce jointe',
-    duration: 62,
+    duration: 64,
     blurb: 'À, Cc, objet, message poli et pièce jointe.',
   },
   {
@@ -220,7 +220,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 2,
     title: 'TP 2.2 · Nous écrivons à plusieurs',
-    duration: 63,
+    duration: 65,
     blurb: 'Document partagé, commentaires et historique.',
   },
   {
@@ -228,7 +228,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 3,
     title: 'À retenir · Je crée du son et des vidéos',
-    duration: 93,
+    duration: 99,
     blurb: 'Podcast, montage, formats et droits.',
   },
   {
@@ -236,7 +236,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 3,
     title: "TP 3.1 · J'enregistre un podcast",
-    duration: 64,
+    duration: 66,
     blurb: 'Enregistrer, nettoyer, mixer, exporter en MP3.',
   },
   {
@@ -244,7 +244,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 3,
     title: 'TP 3.2 · Je monte une courte vidéo',
-    duration: 58,
+    duration: 59,
     blurb: 'Storyboard, transitions, générique, MP4.',
   },
   {
@@ -252,7 +252,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 4,
     title: 'À retenir · Je programme avec Scratch',
-    duration: 87,
+    duration: 92,
     blurb: 'Algorithme, boucles, variables et modules.',
   },
   {
@@ -260,7 +260,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 4,
     title: 'TP 4.1 · Je programme un quiz',
-    duration: 61,
+    duration: 63,
     blurb: 'Variable score et « si… alors… sinon ».',
   },
   {
@@ -268,7 +268,7 @@ const VIDEOS_8: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 4,
     title: 'TP 4.2 · Projet « Attrape les fruits »',
-    duration: 64,
+    duration: 65,
     blurb: 'Un jeu complet avec un module.',
   },
 ];
@@ -306,7 +306,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 1,
     title: 'À retenir · Les objets communicants',
-    duration: 85,
+    duration: 89,
     blurb: 'Capteurs, actionneurs, micro:bit et technologies sans fil.',
   },
   {
@@ -314,7 +314,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 1,
     title: 'TP 1.1 · Je découvre la carte micro:bit',
-    duration: 62,
+    duration: 66,
     blurb: 'Icône, boutons et température dans MakeCode.',
   },
   {
@@ -322,7 +322,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 1,
     title: "TP 1.2 · J'enquête sur les objets du quotidien",
-    duration: 59,
+    duration: 61,
     blurb: 'Capteur, actionneur, communication et risques.',
   },
   {
@@ -330,7 +330,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 2,
     title: 'À retenir · Je collabore et je me protège',
-    duration: 78,
+    duration: 81,
     blurb: 'Outils collaboratifs, traces et identité numérique.',
   },
   {
@@ -338,7 +338,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 2,
     title: 'TP 2.1 · Une carte mentale à plusieurs',
-    duration: 55,
+    duration: 59,
     blurb: 'Partager, compléter et exporter la carte.',
   },
   {
@@ -346,7 +346,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 2,
     title: 'TP 2.2 · Je contrôle mes traces numériques',
-    duration: 60,
+    duration: 61,
     blurb: 'Historique, cookies et navigation privée.',
   },
   {
@@ -354,7 +354,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 3,
     title: 'À retenir · Je programme un objet',
-    duration: 80,
+    duration: 85,
     blurb: 'Entrées, sorties, MakeCode, radio.',
   },
   {
@@ -362,7 +362,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 3,
     title: 'TP 3.1 · La veilleuse automatique',
-    duration: 59,
+    duration: 63,
     blurb: 'Capteur de lumière et « si… alors… sinon ».',
   },
   {
@@ -370,7 +370,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 3,
     title: 'TP 3.2 · Deux cartes par radio',
-    duration: 56,
+    duration: 58,
     blurb: 'Groupe radio, envoyer et recevoir.',
   },
   {
@@ -378,7 +378,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'RETENIR',
     chapter: 4,
     title: 'À retenir · Je crée une application',
-    duration: 87,
+    duration: 94,
     blurb: 'App Inventor et la station météo.',
   },
   {
@@ -386,7 +386,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 4,
     title: 'TP 4.1 · Ma première application mobile',
-    duration: 59,
+    duration: 61,
     blurb: 'Designer, blocs et AI Companion.',
   },
   {
@@ -394,7 +394,7 @@ const VIDEOS_9: readonly BookVideo[] = [
     kind: 'CORRECTION',
     chapter: 4,
     title: 'TP 4.2 · Projet station météo',
-    duration: 62,
+    duration: 66,
     blurb: 'Mesurer, transmettre, présenter.',
   },
 ];
@@ -470,7 +470,7 @@ export function videoByCode(
  * Bumped when the files of a kind are replaced (same code, new content), so browsers that cached
  * the old video fetch the new one. The QR codes keep pointing at `/v/<code>` and never change.
  */
-const FILE_VERSION: Record<VideoKind, number> = { RETENIR: 3, CORRECTION: 3 };
+const FILE_VERSION: Record<VideoKind, number> = { RETENIR: 4, CORRECTION: 4 };
 
 function folderOf(v: BookVideo): string {
   return bookOfCode(v.code)?.folder ?? '7eme';
