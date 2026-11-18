@@ -18,14 +18,18 @@ export interface BookVideo {
   duration: number;
   /** Short line shown under the title. */
   blurb: string;
-  /** Spoken language: 'AR' = voix en arabe avec sous-titres français (default 'FR'). */
-  voice?: 'FR' | 'AR';
 }
 
 export interface BookChapter {
   num: number;
   title: string;
+  /** The chapter's colour, the same as its module « Cahier 7ᵉ » in the app. */
+  color: string;
+  icon: string;
 }
+
+/** Every video: the teacher speaks French, with the Arabic translation as subtitles. */
+export const VIDEO_LANGUAGES = '🇫🇷 Voix en français · 🇹🇳 Sous-titres en arabe';
 
 export const BOOK_LEVEL_LABEL = '7ᵉ année de base';
 
@@ -41,11 +45,11 @@ export function canSeeBookVideos(level: Level | null | undefined): boolean {
 }
 
 export const BOOK_CHAPTERS: readonly BookChapter[] = [
-  { num: 1, title: "Ordinateur et système d'exploitation" },
-  { num: 2, title: 'Traitement de textes' },
-  { num: 3, title: "Traitement d'images" },
-  { num: 4, title: 'Internet et le Web' },
-  { num: 5, title: 'Mon projet' },
+  { num: 1, title: "Ordinateur et système d'exploitation", color: '#1F6FB2', icon: '💻' },
+  { num: 2, title: 'Traitement de textes', color: '#C0392B', icon: '📝' },
+  { num: 3, title: "Traitement d'images", color: '#1E8449', icon: '🎨' },
+  { num: 4, title: 'Internet et le Web', color: '#7D3C98', icon: '🌐' },
+  { num: 5, title: 'Mon projet', color: '#B9770E', icon: '🚀' },
 ];
 
 export const BOOK_VIDEOS: readonly BookVideo[] = [
@@ -55,7 +59,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     chapter: 1,
     title: "À retenir · L'ordinateur et moi",
     duration: 171,
-    blurb: "L'essentiel du chapitre 1, avec les mots clés en arabe.",
+    blurb: "L'essentiel du chapitre 1, sous-titré en arabe.",
   },
   {
     code: '7-1-1',
@@ -64,7 +68,6 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     title: 'TP 1.1 · Construire mon arborescence',
     duration: 152,
     blurb: 'Créer des dossiers et des fichiers, copier et déplacer.',
-    voice: 'AR',
   },
   {
     code: '7-1-2',
@@ -73,7 +76,6 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     title: 'TP 1.2 · Renommer, supprimer, restaurer',
     duration: 102,
     blurb: 'Utiliser la Corbeille sans perdre ses données.',
-    voice: 'AR',
   },
   {
     code: '7-r2',
@@ -81,7 +83,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     chapter: 2,
     title: "À retenir · J'écris avec l'ordinateur",
     duration: 175,
-    blurb: "L'essentiel du traitement de textes, avec les mots clés en arabe.",
+    blurb: "L'essentiel du traitement de textes, sous-titré en arabe.",
   },
   {
     code: '7-2-1',
@@ -90,7 +92,6 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     title: 'TP 2.1 · Mon collège',
     duration: 123,
     blurb: 'Saisir, enregistrer, mettre en forme et en page.',
-    voice: 'AR',
   },
   {
     code: '7-2-2',
@@ -99,7 +100,6 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     title: "TP 2.2 · Ma carte d'identité scolaire",
     duration: 109,
     blurb: 'Insérer un tableau, une image, une bordure, imprimer.',
-    voice: 'AR',
   },
   {
     code: '7-r3',
@@ -107,7 +107,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     chapter: 3,
     title: "À retenir · Je dessine avec l'ordinateur",
     duration: 179,
-    blurb: "L'essentiel du traitement d'images, avec les mots clés en arabe.",
+    blurb: "L'essentiel du traitement d'images, sous-titré en arabe.",
   },
   {
     code: '7-3-1',
@@ -116,7 +116,6 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     title: 'TP 3.1 · Le drapeau tunisien',
     duration: 123,
     blurb: 'Formes, remplissage et enregistrement en PNG.',
-    voice: 'AR',
   },
   {
     code: '7-3-2',
@@ -125,7 +124,6 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     title: "TP 3.2 · Trois versions d'une photo",
     duration: 102,
     blurb: 'Filtre, symétrie, taille et texte, sans toucher à l’original.',
-    voice: 'AR',
   },
   {
     code: '7-r4',
@@ -133,7 +131,7 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     chapter: 4,
     title: 'À retenir · Je surfe sur le Web',
     duration: 190,
-    blurb: "L'essentiel d'Internet et du Web, avec les mots clés en arabe.",
+    blurb: "L'essentiel d'Internet et du Web, sous-titré en arabe.",
   },
   {
     code: '7-4-1',
@@ -142,7 +140,6 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     title: 'TP 4.1 · Découvrir mon navigateur',
     duration: 103,
     blurb: "Barre d'adresse, Précédent, Actualiser, liens.",
-    voice: 'AR',
   },
   {
     code: '7-4-2',
@@ -151,7 +148,6 @@ export const BOOK_VIDEOS: readonly BookVideo[] = [
     title: 'TP 4.2 · Mini-exposé : une ville tunisienne',
     duration: 106,
     blurb: 'Chercher, vérifier, récupérer et citer ses sources.',
-    voice: 'AR',
   },
   {
     code: '7-r5',
@@ -179,7 +175,7 @@ export function videoByCode(
  * Bumped when the files of a kind are replaced (same code, new content), so browsers that cached
  * the old video fetch the new one. The QR codes keep pointing at `/v/<code>` and never change.
  */
-const FILE_VERSION: Record<VideoKind, number> = { RETENIR: 1, CORRECTION: 2 };
+const FILE_VERSION: Record<VideoKind, number> = { RETENIR: 3, CORRECTION: 3 };
 
 export function videoSrc(v: BookVideo): string {
   return `/videos/7eme/${v.code}.mp4?v=${FILE_VERSION[v.kind]}`;
@@ -193,4 +189,39 @@ export function formatDuration(seconds: number): string {
   const m = Math.floor(seconds / 60);
   const s = Math.round(seconds % 60);
   return `${m} min ${String(s).padStart(2, '0')}`;
+}
+
+export function chapterOf(v: BookVideo | null | undefined): BookChapter | undefined {
+  return BOOK_CHAPTERS.find((c) => c.num === v?.chapter);
+}
+
+export function totalMinutes(videos: readonly BookVideo[]): number {
+  return Math.round(videos.reduce((sum, v) => sum + v.duration, 0) / 60);
+}
+
+const WATCHED_KEY = 'ef-videos-7eme-vues';
+
+/**
+ * Videos this viewer has watched to the end, kept in this browser only: a small convenience to
+ * find where one stopped, never a record of progress. Storage may be unavailable: then nothing is
+ * remembered and every video simply shows as not yet watched.
+ */
+export function readWatched(): Set<string> {
+  try {
+    const raw = localStorage.getItem(WATCHED_KEY);
+    return new Set(raw ? (JSON.parse(raw) as string[]) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+export function markWatched(code: string): Set<string> {
+  const watched = readWatched();
+  watched.add(code);
+  try {
+    localStorage.setItem(WATCHED_KEY, JSON.stringify([...watched]));
+  } catch {
+    // Private window or blocked storage: the badge just will not persist
+  }
+  return watched;
 }
