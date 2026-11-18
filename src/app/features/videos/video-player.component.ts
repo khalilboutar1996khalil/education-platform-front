@@ -1,8 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
-  BOOK_LEVEL_LABEL,
-  BOOK_VIDEOS,
+  bookOfCode,
   BookVideo,
   VIDEO_KIND_LABELS,
   VIDEO_LANGUAGES,
@@ -25,7 +30,15 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
   template: `
     <div class="ef-page" [style.--c]="chapter()?.color ?? '#15803d'">
       <a routerLink="/app/videos" class="back">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+        >
           <polyline points="15 18 9 12 15 6" />
         </svg>
         Toutes les vidéos
@@ -35,11 +48,18 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
         <div class="layout">
           <div class="main">
             <header class="head">
-              <span class="head__icon" aria-hidden="true">{{ chapter()?.icon }}</span>
+              <span class="head__icon" aria-hidden="true">{{
+                chapter()?.icon
+              }}</span>
               <div>
                 <div class="head__tags">
-                  <span class="tag" [class.tag--corr]="v.kind === 'CORRECTION'">{{ kindIcon(v) }} {{ kindLabel() }}</span>
-                  <span class="crumb">{{ levelLabel }} · Chapitre {{ v.chapter }} · {{ chapter()?.title }}</span>
+                  <span class="tag" [class.tag--corr]="v.kind === 'CORRECTION'"
+                    >{{ kindIcon(v) }} {{ kindLabel() }}</span
+                  >
+                  <span class="crumb"
+                    >{{ levelLabel() }} · Chapitre {{ v.chapter }} ·
+                    {{ chapter()?.title }}</span
+                  >
                 </div>
                 <h1 class="title">{{ v.title }}</h1>
               </div>
@@ -48,7 +68,14 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
             <div class="player">
               <!-- The key forces a fresh element when moving to the next video -->
               @for (k of [v.code]; track k) {
-                <video controls playsinline preload="metadata" [src]="src()" [poster]="poster()" (ended)="ended(v)">
+                <video
+                  controls
+                  playsinline
+                  preload="metadata"
+                  [src]="src()"
+                  [poster]="poster()"
+                  (ended)="ended(v)"
+                >
                   Votre navigateur ne peut pas lire cette vidéo.
                 </video>
               }
@@ -60,7 +87,9 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
               @if (watched().has(v.code)) {
                 <span class="pill pill--ok">✓ Vue</span>
               }
-              <a class="dl" [href]="src()" [attr.download]="v.code + '.mp4'">⬇ Télécharger</a>
+              <a class="dl" [href]="src()" [attr.download]="v.code + '.mp4'"
+                >⬇ Télécharger</a
+              >
             </div>
 
             <p class="blurb">{{ v.blurb }}</p>
@@ -68,19 +97,26 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
             @if (v.kind === 'CORRECTION') {
               <div class="tip">
                 <b>💡 Comment bien utiliser cette correction</b>
-                Fais d'abord le TP seul, avec ton cahier. Ensuite, regarde la vidéo et mets-la en
+                Fais d'abord le TP seul, avec ton cahier. Ensuite, regarde la
+                vidéo et mets-la en
                 <b>pause</b> après chaque étape pour comparer avec ton travail.
               </div>
             }
 
             <nav class="nav">
               @if (prev(); as p) {
-                <a class="nav__btn" [routerLink]="['/app/videos', p.code]"><small>← Précédente</small>{{ p.title }}</a>
+                <a class="nav__btn" [routerLink]="['/app/videos', p.code]"
+                  ><small>← Précédente</small>{{ p.title }}</a
+                >
               } @else {
                 <span></span>
               }
               @if (next(); as n) {
-                <a class="nav__btn nav__btn--next" [routerLink]="['/app/videos', n.code]"><small>Suivante →</small>{{ n.title }}</a>
+                <a
+                  class="nav__btn nav__btn--next"
+                  [routerLink]="['/app/videos', n.code]"
+                  ><small>Suivante →</small>{{ n.title }}</a
+                >
               }
             </nav>
           </div>
@@ -88,7 +124,11 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
           <aside class="side" aria-label="Vidéos de ce chapitre">
             <div class="side__title">Dans ce chapitre</div>
             @for (o of siblings(); track o.code) {
-              <a class="item" [class.item--on]="o.code === v.code" [routerLink]="['/app/videos', o.code]">
+              <a
+                class="item"
+                [class.item--on]="o.code === v.code"
+                [routerLink]="['/app/videos', o.code]"
+              >
                 <span class="item__thumb">
                   <img [src]="posterOf(o)" alt="" loading="lazy" />
                   @if (o.code === v.code) {
@@ -111,8 +151,13 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
       } @else {
         <div class="ef-empty">
           <div class="ef-empty__title">Vidéo introuvable</div>
-          <div class="ef-empty__text">Le code « {{ code() }} » ne correspond à aucune vidéo. Vérifie le QR code ou choisis dans la liste.</div>
-          <a routerLink="/app/videos" class="ef-soft-btn">Voir toutes les vidéos</a>
+          <div class="ef-empty__text">
+            Le code « {{ code() }} » ne correspond à aucune vidéo. Vérifie le QR
+            code ou choisis dans la liste.
+          </div>
+          <a routerLink="/app/videos" class="ef-soft-btn"
+            >Voir toutes les vidéos</a
+          >
         </div>
       }
     </div>
@@ -369,27 +414,45 @@ import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
 })
 export class VideoPlayerComponent {
   constructor() {
-    leaveVideosWhenAdminChangesLevel();
+    leaveVideosWhenAdminChangesLevel(() => this.book());
   }
 
   /** Bound from the `:code` route parameter. */
   readonly code = input<string>('');
 
-  protected readonly levelLabel = BOOK_LEVEL_LABEL;
   protected readonly languages = VIDEO_LANGUAGES;
   protected readonly watched = signal(readWatched());
   protected readonly video = computed(() => videoByCode(this.code()));
+  protected readonly book = computed(() => bookOfCode(this.code()));
+  protected readonly levelLabel = computed(() => this.book()?.label ?? '');
+  private readonly list = computed(() => this.book()?.videos ?? []);
   protected readonly chapter = computed(() => chapterOf(this.video()));
-  private readonly index = computed(() => BOOK_VIDEOS.findIndex((v) => v === this.video()));
+  private readonly index = computed(() =>
+    this.list().findIndex((v) => v === this.video()),
+  );
 
-  protected readonly src = computed(() => (this.video() ? videoSrc(this.video()!) : ''));
-  protected readonly poster = computed(() => (this.video() ? videoPoster(this.video()!) : ''));
-  protected readonly duration = computed(() => formatDuration(this.video()?.duration ?? 0));
-  protected readonly kindLabel = computed(() => (this.video() ? VIDEO_KIND_LABELS[this.video()!.kind] : ''));
-  protected readonly siblings = computed(() => BOOK_VIDEOS.filter((v) => v.chapter === this.video()?.chapter));
-  protected readonly prev = computed(() => (this.index() > 0 ? BOOK_VIDEOS[this.index() - 1] : null));
+  protected readonly src = computed(() =>
+    this.video() ? videoSrc(this.video()!) : '',
+  );
+  protected readonly poster = computed(() =>
+    this.video() ? videoPoster(this.video()!) : '',
+  );
+  protected readonly duration = computed(() =>
+    formatDuration(this.video()?.duration ?? 0),
+  );
+  protected readonly kindLabel = computed(() =>
+    this.video() ? VIDEO_KIND_LABELS[this.video()!.kind] : '',
+  );
+  protected readonly siblings = computed(() =>
+    this.list().filter((v) => v.chapter === this.video()?.chapter),
+  );
+  protected readonly prev = computed(() =>
+    this.index() > 0 ? this.list()[this.index() - 1] : null,
+  );
   protected readonly next = computed(() =>
-    this.index() >= 0 && this.index() < BOOK_VIDEOS.length - 1 ? BOOK_VIDEOS[this.index() + 1] : null,
+    this.index() >= 0 && this.index() < this.list().length - 1
+      ? this.list()[this.index() + 1]
+      : null,
   );
 
   /** Watched to the end: shown as « Vue » here and in the library. */
