@@ -1,5 +1,5 @@
 /**
- * Videos of the parascolaire books (7ᵉ and 8ᵉ), served as static files from `public/videos/<n>eme/`.
+ * Videos of the parascolaire books (7ᵉ, 8ᵉ and 9ᵉ), served as static files from `public/videos/<n>eme/`.
  * Each book belongs to one level: only its students (or an admin working on that level) see it.
  *
  * The `code` is printed in the book as a QR code pointing at `/v/<code>`, so a code must never
@@ -273,6 +273,132 @@ const VIDEOS_8: readonly BookVideo[] = [
   },
 ];
 
+const CHAPTERS_9: readonly BookChapter[] = [
+  {
+    num: 1,
+    title: 'Je découvre les objets communicants',
+    color: '#2563eb',
+    icon: '📡',
+  },
+  {
+    num: 2,
+    title: 'Je collabore en ligne et je protège mon identité numérique',
+    color: '#059669',
+    icon: '🤝',
+  },
+  {
+    num: 3,
+    title: 'Je programme un objet communicant',
+    color: '#7c3aed',
+    icon: '🔌',
+  },
+  {
+    num: 4,
+    title: 'Je crée une application mobile et mon projet',
+    color: '#ea580c',
+    icon: '📱',
+  },
+];
+
+const VIDEOS_9: readonly BookVideo[] = [
+  {
+    code: '9-r1',
+    kind: 'RETENIR',
+    chapter: 1,
+    title: 'À retenir · Les objets communicants',
+    duration: 85,
+    blurb: 'Capteurs, actionneurs, micro:bit et technologies sans fil.',
+  },
+  {
+    code: '9-1-1',
+    kind: 'CORRECTION',
+    chapter: 1,
+    title: 'TP 1.1 · Je découvre la carte micro:bit',
+    duration: 62,
+    blurb: 'Icône, boutons et température dans MakeCode.',
+  },
+  {
+    code: '9-1-2',
+    kind: 'CORRECTION',
+    chapter: 1,
+    title: "TP 1.2 · J'enquête sur les objets du quotidien",
+    duration: 59,
+    blurb: 'Capteur, actionneur, communication et risques.',
+  },
+  {
+    code: '9-r2',
+    kind: 'RETENIR',
+    chapter: 2,
+    title: 'À retenir · Je collabore et je me protège',
+    duration: 78,
+    blurb: 'Outils collaboratifs, traces et identité numérique.',
+  },
+  {
+    code: '9-2-1',
+    kind: 'CORRECTION',
+    chapter: 2,
+    title: 'TP 2.1 · Une carte mentale à plusieurs',
+    duration: 55,
+    blurb: 'Partager, compléter et exporter la carte.',
+  },
+  {
+    code: '9-2-2',
+    kind: 'CORRECTION',
+    chapter: 2,
+    title: 'TP 2.2 · Je contrôle mes traces numériques',
+    duration: 60,
+    blurb: 'Historique, cookies et navigation privée.',
+  },
+  {
+    code: '9-r3',
+    kind: 'RETENIR',
+    chapter: 3,
+    title: 'À retenir · Je programme un objet',
+    duration: 80,
+    blurb: 'Entrées, sorties, MakeCode, radio.',
+  },
+  {
+    code: '9-3-1',
+    kind: 'CORRECTION',
+    chapter: 3,
+    title: 'TP 3.1 · La veilleuse automatique',
+    duration: 59,
+    blurb: 'Capteur de lumière et « si… alors… sinon ».',
+  },
+  {
+    code: '9-3-2',
+    kind: 'CORRECTION',
+    chapter: 3,
+    title: 'TP 3.2 · Deux cartes par radio',
+    duration: 56,
+    blurb: 'Groupe radio, envoyer et recevoir.',
+  },
+  {
+    code: '9-r4',
+    kind: 'RETENIR',
+    chapter: 4,
+    title: 'À retenir · Je crée une application',
+    duration: 87,
+    blurb: 'App Inventor et la station météo.',
+  },
+  {
+    code: '9-4-1',
+    kind: 'CORRECTION',
+    chapter: 4,
+    title: 'TP 4.1 · Ma première application mobile',
+    duration: 59,
+    blurb: 'Designer, blocs et AI Companion.',
+  },
+  {
+    code: '9-4-2',
+    kind: 'CORRECTION',
+    chapter: 4,
+    title: 'TP 4.2 · Projet station météo',
+    duration: 62,
+    blurb: 'Mesurer, transmettre, présenter.',
+  },
+];
+
 export interface Book {
   /** The number in the QR codes: `/v/<num>` and video codes `<num>-…`. */
   num: string;
@@ -299,6 +425,14 @@ export const BOOKS: readonly Book[] = [
     folder: '8eme',
     chapters: CHAPTERS_8,
     videos: VIDEOS_8,
+  },
+  {
+    num: '9',
+    level: 'NINTH_BASE',
+    label: '9ᵉ année de base',
+    folder: '9eme',
+    chapters: CHAPTERS_9,
+    videos: VIDEOS_9,
   },
 ];
 
