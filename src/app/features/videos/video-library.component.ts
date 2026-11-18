@@ -1,9 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
-  BOOK_CHAPTERS,
-  BOOK_LEVEL_LABEL,
-  BOOK_VIDEOS,
   BookVideo,
   VIDEO_KIND_LABELS,
   VIDEO_LANGUAGES,
@@ -13,11 +15,11 @@ import {
   totalMinutes,
   videoPoster,
 } from './videos.catalog';
-import { leaveVideosWhenAdminChangesLevel } from './videos.guard';
+import { currentBook, leaveVideosWhenAdminChangesLevel } from './videos.guard';
 
 type Filter = 'ALL' | VideoKind;
 
-/** Every video of the 7ᵉ book, grouped by chapter (`/v/7` in the printed QR code). */
+/** Every video of the viewer's book (7ᵉ or 8ᵉ), grouped by chapter (`/v/7`, `/v/8` in the printed QR codes). */
 @Component({
   selector: 'ef-video-library',
   standalone: true,
@@ -28,25 +30,44 @@ type Filter = 'ALL' | VideoKind;
       <!-- Hero -->
       <section class="hero">
         <div class="hero__text">
-          <span class="hero__kicker">🎬 Vidéos du cahier · {{ levelLabel }}</span>
-          <h1 class="hero__title">Revois le cours et corrige tes TP, pas à pas</h1>
+          <span class="hero__kicker"
+            >🎬 Vidéos du cahier · {{ book().label }}</span
+          >
+          <h1 class="hero__title">
+            Revois le cours et corrige tes TP, pas à pas
+          </h1>
           <p class="hero__sub">{{ languages }}</p>
           <div class="hero__stats">
-            <span><b>{{ all.length }}</b> vidéos</span>
-            <span><b>{{ minutes }}</b> min</span>
-            <span><b>{{ chapters.length }}</b> chapitres</span>
+            <span
+              ><b>{{ all().length }}</b> vidéos</span
+            >
+            <span
+              ><b>{{ minutes() }}</b> min</span
+            >
+            <span
+              ><b>{{ chapters().length }}</b> chapitres</span
+            >
           </div>
           @if (next(); as n) {
             <a class="hero__cta" [routerLink]="['/app/videos', n.code]">
               ▶ {{ watchedCount() ? 'Continuer' : 'Commencer' }} : {{ n.title }}
             </a>
           } @else {
-            <span class="hero__done">🏆 Bravo, tu as regardé toutes les vidéos !</span>
+            <span class="hero__done"
+              >🏆 Bravo, tu as regardé toutes les vidéos !</span
+            >
           }
         </div>
-        <div class="hero__ring" [style.--p]="progress()" role="img" [attr.aria-label]="watchedCount() + ' vidéos vues sur ' + all.length">
+        <div
+          class="hero__ring"
+          [style.--p]="progress()"
+          role="img"
+          [attr.aria-label]="
+            watchedCount() + ' vidéos vues sur ' + all().length
+          "
+        >
           <div class="hero__ring-in">
-            <b>{{ watchedCount() }}/{{ all.length }}</b>
+            <b>{{ watchedCount() }}/{{ all().length }}</b>
             <span>vues</span>
           </div>
         </div>
@@ -67,7 +88,9 @@ type Filter = 'ALL' | VideoKind;
             </button>
           }
         </div>
-        <div class="legend">Scanne le QR code d'un TP dans ton cahier pour ouvrir sa correction.</div>
+        <div class="legend">
+          Scanne le QR code d'un TP dans ton cahier pour ouvrir sa correction.
+        </div>
       </div>
 
       @for (ch of groups(); track ch.num) {
@@ -78,20 +101,37 @@ type Filter = 'ALL' | VideoKind;
               <span class="ch__num">Chapitre {{ ch.num }}</span>
               <h2 class="ch__title">{{ ch.title }}</h2>
             </div>
-            <div class="ch__meter" [attr.aria-label]="ch.seen + ' sur ' + ch.videos.length + ' vues'">
-              <span class="ch__meter-txt">{{ ch.seen }}/{{ ch.videos.length }} vues</span>
-              <span class="ch__meter-bar"><span [style.width.%]="(ch.seen / ch.videos.length) * 100"></span></span>
+            <div
+              class="ch__meter"
+              [attr.aria-label]="ch.seen + ' sur ' + ch.videos.length + ' vues'"
+            >
+              <span class="ch__meter-txt"
+                >{{ ch.seen }}/{{ ch.videos.length }} vues</span
+              >
+              <span class="ch__meter-bar"
+                ><span
+                  [style.width.%]="(ch.seen / ch.videos.length) * 100"
+                ></span
+              ></span>
             </div>
           </header>
           <div class="grid">
             @for (v of ch.videos; track v.code) {
-              <a class="card" [routerLink]="['/app/videos', v.code]" [class.card--seen]="watched().has(v.code)">
+              <a
+                class="card"
+                [routerLink]="['/app/videos', v.code]"
+                [class.card--seen]="watched().has(v.code)"
+              >
                 <div class="thumb">
                   <img [src]="poster(v)" alt="" loading="lazy" />
                   <span class="thumb__shade"></span>
                   <span class="play" aria-hidden="true"><span>▶</span></span>
                   <span class="len">{{ duration(v) }}</span>
-                  <span class="kind" [class.kind--corr]="v.kind === 'CORRECTION'">{{ kindIcon(v) }} {{ kindLabels[v.kind] }}</span>
+                  <span
+                    class="kind"
+                    [class.kind--corr]="v.kind === 'CORRECTION'"
+                    >{{ kindIcon(v) }} {{ kindLabels[v.kind] }}</span
+                  >
                   @if (watched().has(v.code)) {
                     <span class="seen">✓ Vue</span>
                   }
@@ -119,8 +159,16 @@ type Filter = 'ALL' | VideoKind;
       border-radius: var(--ef-radius-xl);
       color: #fff;
       background:
-        radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.18), transparent 40%),
-        radial-gradient(circle at 10% 110%, rgba(255, 209, 102, 0.35), transparent 45%),
+        radial-gradient(
+          circle at 85% 20%,
+          rgba(255, 255, 255, 0.18),
+          transparent 40%
+        ),
+        radial-gradient(
+          circle at 10% 110%,
+          rgba(255, 209, 102, 0.35),
+          transparent 45%
+        ),
         linear-gradient(135deg, #0f5132, #15803d 55%, #22c55e);
       box-shadow: var(--ef-shadow-lg);
       overflow: hidden;
@@ -184,7 +232,10 @@ type Filter = 'ALL' | VideoKind;
       width: 132px;
       height: 132px;
       border-radius: 50%;
-      background: conic-gradient(#ffd166 calc(var(--p) * 1%), rgba(255, 255, 255, 0.22) 0);
+      background: conic-gradient(
+        #ffd166 calc(var(--p) * 1%),
+        rgba(255, 255, 255, 0.22) 0
+      );
       display: grid;
       place-items: center;
     }
@@ -341,7 +392,13 @@ type Filter = 'ALL' | VideoKind;
     .thumb__shade {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), transparent 35%, transparent 60%, rgba(0, 0, 0, 0.45));
+      background: linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.35),
+        transparent 35%,
+        transparent 60%,
+        rgba(0, 0, 0, 0.45)
+      );
     }
     .play {
       position: absolute;
@@ -441,32 +498,47 @@ export class VideoLibraryComponent {
     leaveVideosWhenAdminChangesLevel();
   }
 
-  protected readonly levelLabel = BOOK_LEVEL_LABEL;
+  protected readonly book = currentBook();
   protected readonly languages = VIDEO_LANGUAGES;
   protected readonly kindLabels = VIDEO_KIND_LABELS;
-  protected readonly all = BOOK_VIDEOS;
-  protected readonly chapters = BOOK_CHAPTERS;
-  protected readonly minutes = totalMinutes(BOOK_VIDEOS);
-  protected readonly filters: { value: Filter; label: string; icon: string }[] = [
-    { value: 'ALL', label: 'Toutes', icon: '🎬' },
-    { value: 'RETENIR', label: 'À retenir', icon: '💡' },
-    { value: 'CORRECTION', label: 'Corrections de TP', icon: '🛠️' },
-  ];
+  protected readonly all = computed(() => this.book().videos);
+  protected readonly chapters = computed(() => this.book().chapters);
+  protected readonly minutes = computed(() => totalMinutes(this.all()));
+  protected readonly filters: { value: Filter; label: string; icon: string }[] =
+    [
+      { value: 'ALL', label: 'Toutes', icon: '🎬' },
+      { value: 'RETENIR', label: 'À retenir', icon: '💡' },
+      { value: 'CORRECTION', label: 'Corrections de TP', icon: '🛠️' },
+    ];
   protected readonly filter = signal<Filter>('ALL');
   protected readonly watched = signal(readWatched());
 
-  protected readonly watchedCount = computed(() => BOOK_VIDEOS.filter((v) => this.watched().has(v.code)).length);
-  protected readonly progress = computed(() => Math.round((this.watchedCount() / BOOK_VIDEOS.length) * 100));
+  protected readonly watchedCount = computed(
+    () => this.all().filter((v) => this.watched().has(v.code)).length,
+  );
+  protected readonly progress = computed(() =>
+    Math.round((this.watchedCount() / this.all().length) * 100),
+  );
   /** The first video not yet watched, in book order. */
-  protected readonly next = computed(() => BOOK_VIDEOS.find((v) => !this.watched().has(v.code)) ?? null);
+  protected readonly next = computed(
+    () => this.all().find((v) => !this.watched().has(v.code)) ?? null,
+  );
 
   protected readonly groups = computed(() => {
     const f = this.filter();
     const seen = this.watched();
-    return BOOK_CHAPTERS.map((ch) => {
-      const videos = BOOK_VIDEOS.filter((v) => v.chapter === ch.num && (f === 'ALL' || v.kind === f));
-      return { ...ch, videos, seen: videos.filter((v) => seen.has(v.code)).length };
-    }).filter((ch) => ch.videos.length > 0);
+    return this.chapters()
+      .map((ch) => {
+        const videos = this.all().filter(
+          (v) => v.chapter === ch.num && (f === 'ALL' || v.kind === f),
+        );
+        return {
+          ...ch,
+          videos,
+          seen: videos.filter((v) => seen.has(v.code)).length,
+        };
+      })
+      .filter((ch) => ch.videos.length > 0);
   });
 
   protected poster(v: BookVideo): string {
