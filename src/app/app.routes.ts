@@ -20,7 +20,7 @@ export const routes: Routes = [
     loadComponent: () => import('./layout/shell.component').then((m) => m.ShellComponent),
     loadChildren: () => import('./features/workspace/workspace.routes'),
   },
-  // Short links printed as QR codes in the books: /v/7, /v/8 (a whole book) and /v/<code> (one video).
+  // Short links printed as QR codes in the books: /v/7, /v/8, /v/9 (a whole book) and /v/<code> (one video).
   // They must keep working for as long as a printed book is in use.
   { path: 'v/7', pathMatch: 'full', redirectTo: 'app/videos/7' },
   { path: 'v/:code', redirectTo: 'app/videos/:code' },
